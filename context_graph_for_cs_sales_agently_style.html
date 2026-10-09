@@ -1,48 +1,37 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="id" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KASIRNUSA // Relationship Path Finder — Tim 3 Context Graph</title>
-  <meta name="description" content="Relationship Path Finder Tim 3: Menemukan jalur koneksi terpendek, terkuat, dan draft pesan intro menuju decision maker di prospek P01 dan P04 KasirNusa.">
+  <title>KasirNusa Context Graph — Relationship Path Finder (Tim 3)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            brand: {
-              50: '#EFF6FF',
-              100: '#DBEAFE',
-              200: '#BFDBFE',
-              300: '#93C5FD',
-              400: '#60A5FA',
-              500: '#3B82F6',
-              600: '#2563EB',
-              700: '#1D4ED8',
-              800: '#1E40AF',
-              900: '#1E3A8A',
-              950: '#0F2356'
+            zinc: {
+              850: '#1f1f23',
+              900: '#18181b',
+              950: '#09090b',
             },
-            slate: {
-              850: '#151E2E',
-              900: '#0F172A',
-              950: '#0B0F19'
+            accent: {
+              blue: '#3b82f6',
+              cyan: '#06b6d4',
+              emerald: '#10b981',
+              rose: '#f43f5e',
+              amber: '#f59e0b',
+              purple: '#a855f7',
             }
           },
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            mono: ['"Space Grotesk"', 'monospace']
-          },
-          boxShadow: {
-            'card': '0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03)',
-            'card-hover': '0 20px 30px -10px rgba(37, 99, 235, 0.12), 0 8px 16px -4px rgba(15, 23, 42, 0.04)',
-            'glow-blue': '0 0 50px -10px rgba(37, 99, 235, 0.45)',
-            'pill': '0 2px 8px rgba(37, 99, 235, 0.08)'
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           }
         }
       }
@@ -50,1089 +39,462 @@
   </script>
 
   <style>
+    * { box-sizing: border-box; }
     body {
-      background-color: #FFFFFF;
-      color: #0F172A;
-      overflow-x: hidden;
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
     }
 
-    .hero-glow {
-      background: radial-gradient(circle at 50% 100%, #2563EB 0%, #1D4ED8 40%, rgba(29, 78, 216, 0) 75%);
-    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
 
-    .pill-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      background-color: #EFF6FF;
-      border: 1px solid #DBEAFE;
-      color: #2563EB;
+    .glow-active {
+      box-shadow: 0 0 25px -3px rgba(59, 130, 246, 0.4);
+    }
+    .badge-mono {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      font-weight: 600;
       letter-spacing: 0.02em;
-    }
-
-    .custom-scroll::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    .custom-scroll::-webkit-scrollbar-track {
-      background: #F8FAFC;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: #CBD5E1;
-      border-radius: 99px;
-    }
-
-    .evidence-tag {
-      display: inline-block;
-      padding: 1px 6px;
-      background-color: rgba(37, 99, 235, 0.1);
-      border: 1px solid rgba(37, 99, 235, 0.3);
-      border-radius: 4px;
-      font-family: "Space Grotesk", monospace;
-      font-size: 11px;
-      font-weight: 600;
-      color: #2563EB;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.4; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.05); }
-    }
-    .pulse-glow {
-      animation: pulseGlow 2.5s infinite ease-in-out;
     }
   </style>
 </head>
-<body class="font-sans antialiased text-slate-900 bg-white">
 
-  <!-- Feedback Notification Toast -->
-  <div id="toast" class="fixed top-5 right-5 sm:right-6 z-50 transform -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-700">
-    <div id="toast-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></div>
-    <span id="toast-text" class="text-xs font-medium font-sans">Jalur relasi berhasil dihitung!</span>
+<body class="h-screen w-screen flex flex-col antialiased select-none">
+
+  <!-- Toast Alert -->
+  <div id="toast" class="fixed top-4 right-4 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white shadow-2xl text-xs font-medium">
+    <div id="toast-indicator" class="w-2 h-2 rounded-full bg-emerald-400"></div>
+    <span id="toast-msg">Jalur berhasil ditemukan</span>
   </div>
 
-  <!-- Navigation Bar -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <a href="#" class="flex items-center gap-3 cursor-pointer">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-blue-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
-          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7.001 15.085A1.5 1.5 0 0 1 9 16.5" />
-            <circle cx="18.5" cy="8.5" r="3.5" />
-            <circle cx="7.5" cy="16.5" r="5.5" />
-            <circle cx="7.5" cy="4.5" r="2.5" />
-          </svg>
+  <!-- Top App Navigation Bar -->
+  <header class="h-14 border-b border-zinc-800 bg-zinc-950 px-4 flex items-center justify-between flex-shrink-0 z-30">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-sm shadow-md shadow-blue-500/20">
+          KN
         </div>
         <div>
-          <span class="font-extrabold text-xl tracking-tight text-slate-900">KASIRNUSA<span class="text-blue-600">.</span></span>
-          <span class="block text-[10px] font-mono tracking-wider uppercase text-blue-600 font-semibold">Tim 3 · Context Graph</span>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-sm tracking-tight text-white">KASIRNUSA</span>
+            <span class="px-1.5 py-0.5 rounded bg-zinc-800 text-[10px] font-mono text-zinc-300 border border-zinc-700">GRAPH v2.0</span>
+          </div>
+          <p class="text-[10px] text-zinc-400 font-mono">Tim 3 · Sales Relationship Path Finder</p>
         </div>
-      </a>
-
-      <!-- Navigation Links -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-        <a href="#path-finder" class="text-blue-600 font-semibold hover:text-blue-700 transition-colors flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-          Path Finder ⚡
-        </a>
-        <a href="#p01-mandala" class="hover:text-blue-600 transition-colors">P01 · Mandala</a>
-        <a href="#p04-nirwana" class="hover:text-blue-600 transition-colors">P04 · Nirwana</a>
-        <a href="#demo" class="hover:text-blue-600 transition-colors">Neural Graph</a>
-        <a href="#live-query" class="hover:text-blue-600 transition-colors">Live Query (Juri)</a>
-        <a href="#sources" class="hover:text-blue-600 transition-colors">6 Sumber Data</a>
-      </nav>
-
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-3 sm:gap-4">
-        <button onclick="openModal('jury-modal')" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
-          <span>📋 Summary Juri</span>
-        </button>
-        <a href="#path-finder" class="cursor-pointer px-5 py-2.5 rounded-full text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/25 transition-all active:scale-95 flex items-center gap-1.5">
-          <span>⚡ Cari Jalur Sekarang</span>
-        </a>
       </div>
+
+      <div class="h-5 w-px bg-zinc-800 mx-1 hidden sm:block"></div>
+
+      <!-- Quick Metrics Pill -->
+      <div class="hidden md:flex items-center gap-4 text-xs font-mono text-zinc-400">
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> 6 Dataset</span>
+        <span class="text-zinc-600">•</span>
+        <span>P01 Mandala: <b class="text-blue-400">Rp 252 Jt (60 Outlets)</b></span>
+        <span class="text-zinc-600">•</span>
+        <span>P04 Nirwana: <b class="text-purple-400">Rp 147 Jt (35 Outlets)</b></span>
+      </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-2.5">
+      <button onclick="openModal('jury-summary-modal')" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors flex items-center gap-1.5">
+        <span>📋</span>
+        <span class="hidden sm:inline">Executive Summary</span>
+      </button>
+      <a href="https://github.com/bebekgalaksi/hackathon-pens-kasirnusa" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="relative pt-12 pb-20 overflow-hidden">
-    <div class="max-w-5xl mx-auto px-4 text-center">
+  <!-- Interactive Control Strip -->
+  <div class="border-b border-zinc-800 bg-zinc-900/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 flex-shrink-0 z-20">
+    
+    <!-- Path Inputs -->
+    <div class="flex items-center flex-wrap gap-2 text-xs flex-1">
+      <span class="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-bold">Path Finder:</span>
       
-      <!-- Pill Badge -->
-      <div class="inline-block mb-4">
-        <div class="pill-badge bg-blue-50/80 border-blue-200 text-blue-700 uppercase tracking-widest text-[11px] px-4 py-1.5 font-bold shadow-sm">
-          🏆 HACKATHON CONTEXT GRAPH · TRACK SALES · TIM 3
-        </div>
+      <!-- Source Dropdown -->
+      <div class="relative">
+        <select id="sel-source" class="h-8 pl-2.5 pr-8 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-medium focus:ring-1 focus:ring-blue-500 focus:outline-none cursor-pointer">
+          <!-- Injected via JS -->
+        </select>
       </div>
 
-      <!-- Main Headline -->
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
-        Lewat Siapa Jalur Terbaik Menuju <br>
-        <span class="text-blue-600">Decision Maker</span>?
-      </h1>
-      
-      <!-- Subtitle -->
-      <p class="mt-5 text-base sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-        Menghubungkan <strong>6 sistem data terpisah</strong> (CRM, 350 email & meeting, 218 riwayat kerja, kontrak, log keputusan, dan usage) untuk mengidentifikasi pengambil keputusan sebenarnya di <strong>P01 (Grup Ritel Mandala)</strong> dan <strong>P04 (Nirwana Hotel & Resto)</strong> serta memformulasikan draft pesan intro terbaik.
-      </p>
+      <span class="text-zinc-500 font-bold px-0.5">➔</span>
 
-      <!-- Hero Action Buttons -->
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#path-finder" class="cursor-pointer w-full sm:w-auto px-8 py-3.5 rounded-full text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
-          <span>⚡ Coba Interactive Path Finder</span>
-        </a>
-        <a href="#demo" class="cursor-pointer w-full sm:w-auto px-8 py-3.5 rounded-full text-sm font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2">
-          <span>🌐 Jelajahi Canvas Neural Graph</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Curved Blue Ambient Backdrop & Floating Dashboard Container -->
-    <div class="relative mt-16 max-w-6xl mx-auto px-4 sm:px-6">
-      
-      <!-- Vivid Blue Curved Mesh Backdrop -->
-      <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[95%] h-[340px] sm:h-[460px] bg-gradient-to-t from-blue-600 via-blue-600/70 to-transparent rounded-[50px] sm:rounded-[70px] blur-xl opacity-80 -z-10 pointer-events-none"></div>
-
-      <!-- Dashboard Mockup Card -->
-      <div class="bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden">
-        
-        <!-- Mockup Header Bar -->
-        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-          <div class="flex items-center gap-3">
-            <div class="flex gap-1.5">
-              <div class="w-3 h-3 rounded-full bg-rose-400"></div>
-              <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-              <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
-            </div>
-            <span class="text-xs font-bold text-slate-800 ml-2 font-mono">KasirNusa Context Intelligence System</span>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 text-xs text-slate-600 font-mono">
-              <span>Snapshot: 1 Okt 2026</span>
-            </div>
-            <div class="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 text-xs font-bold">
-              T3
-            </div>
-          </div>
-        </div>
-
-        <div class="p-6 sm:p-8 bg-slate-50/30">
-          
-          <!-- Welcome Message -->
-          <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <h3 class="text-xl font-bold text-slate-900">Context Graph Executive Radar</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Analisis keterkaitan lintas sumber: Customer Success ↔ Sales Pipeline ↔ Preseden Keputusan.</p>
-            </div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              Full Dataset Synced
-            </span>
-          </div>
-
-          <!-- 4 Top Stat Cards -->
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            
-            <!-- Card 1 -->
-            <div class="bg-blue-600 p-5 rounded-2xl text-white shadow-md shadow-blue-500/20 flex flex-col justify-between">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 text-white uppercase tracking-wider">Prioritas Utama</span>
-                <span class="text-xs font-bold text-blue-100">60% Pipeline</span>
-              </div>
-              <div class="text-2xl sm:text-3xl font-extrabold tracking-tight font-mono">Rp 399 Jt</div>
-              <div class="text-xs text-blue-100 mt-1">Nilai Potensi P01 &amp; P04 per tahun</div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 uppercase tracking-wider">Multi-System</span>
-                <span class="text-xs font-bold text-emerald-600">✓ 100% Valid</span>
-              </div>
-              <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-mono">6 Sumber</div>
-              <div class="text-xs text-slate-500 mt-1">CRM, Interaksi, Kerja, Kontrak, Log, Usage</div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 uppercase tracking-wider">P01 Mandala</span>
-                <span class="text-xs font-bold text-emerald-600">9.2 / 10</span>
-              </div>
-              <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-mono">Sari ➔ Rina</div>
-              <div class="text-xs text-slate-500 mt-1">AM C01 3+ thn (13 interaksi) ➔ GM Ops P01</div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 uppercase tracking-wider">P04 Nirwana</span>
-                <span class="text-xs font-bold text-purple-600">8.5 / 10</span>
-              </div>
-              <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-mono">Wahyu ➔ Budi</div>
-              <div class="text-xs text-slate-500 mt-1">Ex-Kolega 5 thn PT Sentosa Abadi ➔ Hartono</div>
-            </div>
-
-          </div>
-
-          <!-- Bottom Split View: Forecast Win Rate Chart + Active Warm Bridges -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Left Chart Card -->
-            <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm">
-              <div class="flex items-center justify-between mb-4">
-                <div>
-                  <h4 class="font-bold text-sm text-slate-900">Perbandingan Efektivitas Pendekatan Sales</h4>
-                  <p class="text-[11px] text-slate-500">Peluang closing deal berdasarkan metode outreach vs warm introduction</p>
-                </div>
-                <span class="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200">
-                  +45% Win-Rate Lift
-                </span>
-              </div>
-
-              <!-- Bar Visualization -->
-              <div class="space-y-4 pt-2">
-                <div>
-                  <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>Cold Outreach Biasa (Bagus ke Fajar IT / Yuli Purchasing)</span>
-                    <span class="text-rose-600 font-mono">15% (Stuck 20-30 Hari)</span>
-                  </div>
-                  <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                    <div class="bg-rose-400 h-3 rounded-full w-[15%]"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>P04 Referral Rekanan (Wahyu AM ➔ Budi CFO C06 ➔ Hartono Dirut P04)</span>
-                    <span class="text-purple-600 font-mono">75% (Unblock Syarat Referensi)</span>
-                  </div>
-                  <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                    <div class="bg-purple-600 h-3 rounded-full w-[75%]"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>P01 Executive Reunion (Sari AM ➔ Rina GM Ops P01 + Preseden D-2025-11)</span>
-                    <span class="text-emerald-600 font-mono">92% (Internal Champion Validated)</span>
-                  </div>
-                  <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                    <div class="bg-emerald-500 h-3 rounded-full w-[92%]"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Warm Bridges List -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-3">
-                  <h4 class="font-bold text-sm text-slate-900">Jalur Relasi Aktif</h4>
-                  <a href="#path-finder" class="text-[11px] text-blue-600 font-semibold hover:underline">Hitung Jalur ⚡</a>
-                </div>
-
-                <div class="space-y-2.5">
-                  <div onclick="selectPreset('E03', 'K017')" class="cursor-pointer p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 bg-blue-50/40 transition-all flex items-center justify-between">
-                    <div>
-                      <div class="text-xs font-bold text-slate-900">Sari Puspita ➔ Rina Hapsari</div>
-                      <div class="text-[10px] text-slate-500">P01 Mandala • Skor Relasi 9.2/10</div>
-                    </div>
-                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Golden</span>
-                  </div>
-
-                  <div onclick="selectPreset('E04', 'K028')" class="cursor-pointer p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 bg-slate-50 transition-all flex items-center justify-between">
-                    <div>
-                      <div class="text-xs font-bold text-slate-900">Wahyu ➔ Budi ➔ Hartono</div>
-                      <div class="text-[10px] text-slate-500">P04 Nirwana • Overlap 5 thn Sentosa</div>
-                    </div>
-                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">Verified</span>
-                  </div>
-
-                  <div onclick="selectPreset('E06', 'K052')" class="cursor-pointer p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 bg-slate-50 transition-all flex items-center justify-between">
-                    <div>
-                      <div class="text-xs font-bold text-slate-900">Bagus ➔ Fajar IT Manager</div>
-                      <div class="text-[10px] text-slate-500">P01 Teknis • Skor Relasi 6.5/10</div>
-                    </div>
-                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Alternatif</span>
-                  </div>
-                </div>
-              </div>
-
-              <a href="#path-finder" class="mt-4 w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-blue-500/20 text-center">
-                <span>Buka Interactive Path Finder</span>
-              </a>
-            </div>
-
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Inefficiency Alert Section (KasirNusa Context) -->
-  <section class="py-16 bg-slate-50 border-y border-slate-100">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      
-      <!-- Pill Badge -->
-      <div class="pill-badge mb-3">
-        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
-        <span>Akar Masalah Bisnis</span>
+      <!-- Target Dropdown -->
+      <div class="relative">
+        <select id="sel-target" class="h-8 pl-2.5 pr-8 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-medium focus:ring-1 focus:ring-blue-500 focus:outline-none cursor-pointer">
+          <!-- Injected via JS -->
+        </select>
       </div>
 
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-        Mengapa Pipeline Rp 668 Juta Macet?
-      </h2>
+      <!-- Action Button -->
+      <button onclick="runBfsPathFinder()" class="h-8 px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1 active:scale-95">
+        <span>⚡ Hitung Jalur (BFS)</span>
+      </button>
 
-      <p class="mt-3 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
-        Tanpa context graph, informasi berharga tersimpan di sistem terisolasi sehingga tim Sales mendekati kontak yang salah atau kehilangan momentum.
-      </p>
+      <div class="h-4 w-px bg-zinc-800 mx-1 hidden lg:block"></div>
 
-      <!-- Pain Point Capsule Cloud -->
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-2.5 max-w-3xl mx-auto">
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-medium text-slate-700">
-          <span class="text-rose-500 font-bold">✕</span>
-          <span>Bagus (Sales) hanya kontak Fajar (IT Mgr) yang bukan penentu keputusan</span>
-        </div>
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-medium text-slate-700">
-          <span class="text-rose-500 font-bold">✕</span>
-          <span>Deal P01 stuck 20 hari di tahap Proposal tanpa respons eksekutif</span>
-        </div>
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-medium text-slate-700">
-          <span class="text-rose-500 font-bold">✕</span>
-          <span>Deal P04 macet 30 hari di Negosiasi karena Dirut minta referensi sejenis</span>
-        </div>
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-medium text-slate-700">
-          <span class="text-rose-500 font-bold">✕</span>
-          <span>Sales tidak tahu Rina Hapsari (C01) kini jadi GM Operations P01 Mandala</span>
-        </div>
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-medium text-slate-700">
-          <span class="text-rose-500 font-bold">✕</span>
-          <span>Hubungan 5 tahun Budi Santoso (C06) &amp; Hartono (P04) tidak tercatat di CRM</span>
-        </div>
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-medium text-slate-700">
-          <span class="text-rose-500 font-bold">✕</span>
-          <span>Keterlambatan rilis FEAT-07 (Akuntansi) di C01 berpotensi jadi bumerang di P01</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ======================================================== -->
-  <!-- INTERACTIVE RELATIONSHIP PATH FINDER SECTION (CORE FEATURE) -->
-  <!-- ======================================================== -->
-  <section id="path-finder" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center max-w-3xl mx-auto mb-10">
-      <div class="pill-badge mb-3 bg-blue-50 text-blue-700 border-blue-200">
-        <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-        <span>Output Utama Tim 3</span>
-      </div>
-      <h2 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-        Interactive Relationship Path Finder
-      </h2>
-      <p class="mt-3 text-sm sm:text-base text-slate-600">
-        Pilih titik awal dan target prospek. Engine Context Graph akan menghitung jalur terpendek, skor kekuatan relasi, bukti interaksi, strategi outreach, dan <strong>draft pesan intro siap salin</strong>.
-      </p>
-
-      <!-- Quick Preset Buttons -->
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
-        <button onclick="selectPreset('E03', 'K017')" class="px-4 py-2 rounded-full text-xs font-bold bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition-all flex items-center gap-1.5">
-          <span>🥇 P01 Golden: Sari ➔ Rina Hapsari</span>
+      <!-- Quick Preset Shortcuts -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button onclick="setPreset('E03', 'K017')" class="h-7 px-2.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-emerald-400 border border-emerald-500/30 transition-colors">
+          🥇 P01: Sari ➔ Rina
         </button>
-        <button onclick="selectPreset('E04', 'K028')" class="px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white shadow-sm hover:bg-slate-800 transition-all flex items-center gap-1.5">
-          <span>🥇 P04 Golden: Wahyu ➔ Budi ➔ Hartono</span>
+        <button onclick="setPreset('E04', 'K028')" class="h-7 px-2.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-purple-400 border border-purple-500/30 transition-colors">
+          🥇 P04: Wahyu ➔ Budi ➔ Hartono
         </button>
-        <button onclick="selectPreset('E06', 'K017')" class="px-4 py-2 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all">
-          <span>🤝 Sales-CS Collaboration: Bagus ➔ Sari ➔ Rina</span>
+        <button onclick="setPreset('E06', 'K052')" class="h-7 px-2.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-zinc-400 border border-zinc-700 transition-colors">
+          🥈 P01 Alt: Bagus ➔ Fajar
         </button>
-        <button onclick="selectPreset('E03', 'K089')" class="px-4 py-2 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all">
-          <span>🏢 Direct to Dirut: Sari ➔ Steven</span>
+        <button onclick="setPreset('E06', 'K065')" class="h-7 px-2.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-zinc-400 border border-zinc-700 transition-colors">
+          🥈 P04 Alt: Bagus ➔ Yuli
         </button>
       </div>
     </div>
 
-    <!-- Main Path Finder Bento Widget -->
-    <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl p-6 sm:p-8 text-white shadow-2xl border border-slate-800">
-      
-      <!-- Finder Form Controls -->
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-end pb-8 border-b border-slate-800">
-        
-        <!-- Source Selector -->
-        <div class="sm:col-span-5">
-          <label for="finder-source" class="block text-xs font-bold uppercase tracking-wider text-blue-300 mb-2">
-            Titik Awal (Internal KasirNusa / AM / Partner)
-          </label>
-          <div class="relative">
-            <select id="finder-source" class="w-full px-4 py-3.5 rounded-xl bg-slate-800/90 border border-slate-700 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-              <!-- Loaded via JavaScript -->
-            </select>
-          </div>
-        </div>
-
-        <!-- Arrow Separator -->
-        <div class="hidden sm:flex sm:col-span-1 items-center justify-center pb-3 text-slate-500 font-bold text-xl">
-          ➔
-        </div>
-
-        <!-- Target Selector -->
-        <div class="sm:col-span-4">
-          <label for="finder-target" class="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2">
-            Target Decision Maker / Akun Prospek
-          </label>
-          <div class="relative">
-            <select id="finder-target" class="w-full px-4 py-3.5 rounded-xl bg-slate-800/90 border border-slate-700 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-              <!-- Loaded via JavaScript -->
-            </select>
-          </div>
-        </div>
-
-        <!-- Action Button -->
-        <div class="sm:col-span-2">
-          <button onclick="calculateAndRenderPath()" class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 active:scale-95">
-            <span>⚡ Temukan Jalur</span>
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Result Container -->
-      <div id="finder-result-container" class="mt-8">
-        <!-- Will be filled by JavaScript -->
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ======================================================== -->
-  <!-- DEEP DIVE CASE SECTIONS: P01 & P04                       -->
-  <!-- ======================================================== -->
-  <section class="py-16 bg-slate-50 border-y border-slate-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-      
-      <!-- P01 Deep Dive -->
-      <div id="p01-mandala" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-lg">
-        <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-100 gap-4">
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white font-extrabold text-xl flex items-center justify-center shadow-md shadow-blue-500/20 font-mono">
-              P01
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="text-2xl font-extrabold text-slate-900">Grup Ritel Mandala</h3>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Stage: Proposal (20 hari)</span>
-              </div>
-              <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                Minimarket • Rencana 60 Outlet • Nilai Potensi: <strong>Rp 252.000.000 / tahun</strong>
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <button onclick="selectPreset('E03', 'K017')" class="px-4 py-2 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
-              ⚡ Buka di Path Finder
-            </button>
-            <button onclick="copyElementText('draft-p01-text')" class="px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white hover:bg-slate-800">
-              📋 Salin Pesan P01
-            </button>
-          </div>
-        </div>
-
-        <!-- Grid 2 Kolom P01 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          
-          <!-- Kolom 1: Perbandingan Jalur -->
-          <div class="space-y-4">
-            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500 font-mono">Perbandingan Jalur Relasi</h4>
-            
-            <!-- Jalur Terbaik -->
-            <div class="p-5 rounded-2xl bg-emerald-50/60 border-2 border-emerald-400">
-              <div class="flex items-center justify-between mb-2">
-                <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">🥇 JALUR TERBAIK (9.2 / 10)</span>
-                <span class="text-xs font-bold text-emerald-800">2 Hops • Sangat Kuat</span>
-              </div>
-              <h5 class="text-base font-bold text-slate-900">Sari Puspita (AM) ➔ Rina Hapsari (GM Ops) ➔ Steven Wijaya (Dirut)</h5>
-              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                Sari adalah Account Manager Kopi Lintas (C01) selama 3+ tahun dengan 13 interaksi langsung. Rina Hapsari baru saja pindah 1 September 2026 menjadi GM Operations di P01. Fajar (IT Mgr) mengonfirmasi via email <span class="evidence-tag">I0343</span> bahwa keputusan pengadaan sistem kasir 60 gerai ada di tangan GM Operations baru.
-              </p>
-              <div class="mt-3 pt-3 border-t border-emerald-200/60 flex flex-wrap gap-2 text-[11px] font-mono text-emerald-900">
-                <span class="bg-white/80 px-2 py-0.5 rounded border border-emerald-300">Bukti: I0107, I0290, I0343</span>
-                <span class="bg-white/80 px-2 py-0.5 rounded border border-emerald-300">Riwayat: C01 ➔ P01</span>
-              </div>
-            </div>
-
-            <!-- Jalur Alternatif -->
-            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-              <div class="flex items-center justify-between mb-2">
-                <span class="px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">🥈 JALUR ALTERNATIF (6.5 / 10)</span>
-                <span class="text-xs font-bold text-slate-500">Stuck di Teknis</span>
-              </div>
-              <h5 class="text-base font-bold text-slate-900">Bagus Prakoso (Sales) ➔ Fajar Nugraha (IT Mgr)</h5>
-              <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                Bagus hanya berkomunikasi dengan Fajar Nugraha (IT Manager). Fajar secara eksplisit menyatakan ia hanya mengevaluasi teknis, sehingga proposal tertahan 20 hari tanpa keputusan.
-              </p>
-            </div>
-
-            <!-- Preseden & Mitigasi Risiko -->
-            <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-900 space-y-1.5">
-              <div class="font-bold flex items-center gap-1.5 text-amber-800">
-                <span>⚖️ Preseden Log Keputusan &amp; Mitigasi Risiko:</span>
-              </div>
-              <p>• <strong>Preseden D-2025-11:</strong> VP Sales menyetujui diskon 15% untuk 42 outlet C01. Untuk volume 60 outlet di P01, ajukan diskon 15%–18% dengan justifikasi skala volume serupa.</p>
-              <p>• <strong>Peringatan Risiko FEAT-07:</strong> Rina pernah meminta integrasi akuntansi di C01 namun tertunda (<span class="evidence-tag">I0258</span>). Jangan beri janji lisan baru, jelaskan roadmap secara realistis.</p>
-            </div>
-          </div>
-
-          <!-- Kolom 2: Draft Pesan Intro Siap Salin -->
-          <div>
-            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Draft Pesan Intro Siap Pakai (Output Wajib)</h4>
-            
-            <div class="bg-slate-900 rounded-2xl p-6 text-white border border-slate-800 shadow-md">
-              <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs font-mono text-slate-400">
-                <span>Pengirim: Sari Puspita (sari@kasirnusa.id)</span>
-                <button onclick="copyElementText('draft-p01-text')" class="text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1">
-                  📋 Salin Teks
-                </button>
-              </div>
-
-              <div class="text-xs font-mono text-slate-400 py-2 border-b border-slate-800">
-                Penerima: Rina Hapsari (rina.hapsari@mandalaritel.co.id)<br>
-                Subjek: Selamat atas posisi baru di Mandala Ritel, Bu Rina!
-              </div>
-
-              <div id="draft-p01-text" class="text-xs text-slate-200 mt-4 leading-relaxed whitespace-pre-line font-sans">
-Bu Rina yang baik,
-
-Selamat atas posisi barunya sebagai GM Operations di Grup Ritel Mandala! Senang sekali mendengar kabar baik ini.
-
-Saya dengar Mandala sedang mencari sistem kasir modern untuk 60 gerai minimarket. Kebetulan Pak Fajar dari tim IT Mandala sudah melihat demo teknis kami bersama Mas Bagus Prakoso dan responsnya sangat positif.
-
-Mengingat Ibu tentu sudah paham betul kapabilitas dan keandalan KasirNusa dari pengalaman operasional 42 outlet Kopi Lintas Nusantara selama 3 tahun terakhir, mungkin Ibu berkenan jika kami jadwalkan sesi presentasi eksekutif singkat bersama tim manajemen Mandala?
-
-Untuk kebutuhan 60 gerai, kami juga siap menyiapkan skema komersial khusus skala volume enterprise. Kalau Ibu ada waktu luang minggu depan, saya dan Mas Bagus siap berkunjung ke kantor Mandala.
-
-Salam hangat,
-Sari Puspita
-Account Manager · KasirNusa
-              </div>
-            </div>
-
-            <div class="mt-4 p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-800">
-              <strong>💡 Mengapa draft ini efektif?</strong> Membuka pintu lewat hubungan personal hangat 3+ tahun, menghormati peran baru Rina, memvalidasi progres teknis Fajar, dan menyinggung insentif volume resmi.
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- P04 Deep Dive -->
-      <div id="p04-nirwana" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-lg">
-        <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-100 gap-4">
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-purple-600 text-white font-extrabold text-xl flex items-center justify-center shadow-md shadow-purple-500/20 font-mono">
-              P04
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="text-2xl font-extrabold text-slate-900">Nirwana Hotel &amp; Resto</h3>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800">Stage: Negosiasi (30 hari)</span>
-              </div>
-              <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                Hospitality • 35 Outlet • Nilai Potensi: <strong>Rp 147.000.000 / tahun</strong>
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <button onclick="selectPreset('E04', 'K028')" class="px-4 py-2 rounded-full text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100">
-              ⚡ Buka di Path Finder
-            </button>
-            <button onclick="copyElementText('draft-p04-text')" class="px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white hover:bg-slate-800">
-              📋 Salin Pesan P04
-            </button>
-          </div>
-        </div>
-
-        <!-- Grid 2 Kolom P04 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          
-          <!-- Kolom 1: Perbandingan Jalur P04 -->
-          <div class="space-y-4">
-            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500 font-mono">Perbandingan Jalur Relasi</h4>
-            
-            <!-- Jalur Terbaik -->
-            <div class="p-5 rounded-2xl bg-purple-50/60 border-2 border-purple-400">
-              <div class="flex items-center justify-between mb-2">
-                <span class="px-2.5 py-0.5 rounded-full bg-purple-600 text-white text-[10px] font-bold">🥇 JALUR TERBAIK (8.5 / 10)</span>
-                <span class="text-xs font-bold text-purple-800">2 Hops • Ex-Kolega 5 Tahun</span>
-              </div>
-              <h5 class="text-base font-bold text-slate-900">Wahyu (AM) ➔ Budi Santoso (CFO C06) ➔ Hartono Gunawan (Dirut P04)</h5>
-              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                Yuli (Purchasing P04) menyatakan via email <span class="evidence-tag">I0335</span> bahwa Dirut Hartono Gunawan meminta referensi dari pelaku usaha sejenis sebelum menandatangani kontrak. Riwayat kerja membuktikan Budi Santoso (CFO C06 Saiyo) dan Hartono pernah bekerja bersama selama 5 tahun (2015–2019) di <strong>PT Sentosa Abadi Group</strong>. C06 adalah jaringan resto Padang 30 outlet dengan NPS 9 yang sangat puas dengan KasirNusa.
-              </p>
-              <div class="mt-3 pt-3 border-t border-purple-200/60 flex flex-wrap gap-2 text-[11px] font-mono text-purple-900">
-                <span class="bg-white/80 px-2 py-0.5 rounded border border-purple-300">Bukti: I0335, I0300, Employment History</span>
-                <span class="bg-white/80 px-2 py-0.5 rounded border border-purple-300">Overlap 2015–2019 di Sentosa Abadi</span>
-              </div>
-            </div>
-
-            <!-- Jalur Alternatif -->
-            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-              <div class="flex items-center justify-between mb-2">
-                <span class="px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">🥈 JALUR ALTERNATIF (5.0 / 10)</span>
-                <span class="text-xs font-bold text-slate-500">Macet di Purchasing</span>
-              </div>
-              <h5 class="text-base font-bold text-slate-900">Bagus Prakoso (Sales) ➔ Yuli Astuti (Purchasing)</h5>
-              <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                Bagus terus menegosiasikan harga dengan Yuli, namun tidak bisa memberikan apa yang diinginkan Direktur Utama: referensi dari rekanan terpercaya di industri serupa.
-              </p>
-            </div>
-
-            <!-- Rekomendasi Kolaborasi Sales-CS -->
-            <div class="p-4 rounded-2xl bg-blue-50/70 border border-blue-200 text-xs text-blue-900 space-y-1.5">
-              <div class="font-bold flex items-center gap-1.5 text-blue-800">
-                <span>🤝 Sinergi Kolaborasi Sales ↔ Customer Success:</span>
-              </div>
-              <p>1. Wahyu Nugroho (AM C06) menghubungi Budi Santoso (CFO C06) memohon kesediaan memberikan review personal kepada rekan lamanya, Pak Hartono.</p>
-              <p>2. Bagus Prakoso (Sales) menyertakan kontak Budi sebagai golden reference kepada Yuli/Hartono untuk segera menutup kesepakatan Rp 147 juta.</p>
-            </div>
-          </div>
-
-          <!-- Kolom 2: Draft Pesan P04 -->
-          <div>
-            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Draft Pesan Intro &amp; Referral (Output Wajib)</h4>
-            
-            <div class="bg-slate-900 rounded-2xl p-6 text-white border border-slate-800 shadow-md">
-              <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs font-mono text-slate-400">
-                <span>Langkah 1: Wahyu (AM C06) ➔ Budi Santoso (CFO C06)</span>
-                <button onclick="copyElementText('draft-p04-text')" class="text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1">
-                  📋 Salin Teks
-                </button>
-              </div>
-
-              <div id="draft-p04-text" class="text-xs text-slate-200 mt-4 leading-relaxed whitespace-pre-line font-sans">
-Selamat siang Pak Budi,
-
-Semoga Pak Budi dan tim Saiyo Group senantiasa sehat dan lancar dalam persiapan ekspansi 10 cabang baru ke Jakarta.
-
-Pak Budi, saat ini tim kami sedang dalam tahap finalisasi pengadaan sistem POS untuk Nirwana Hotel & Resto (35 outlet) yang dipimpin oleh Pak Hartono Gunawan. Dari riwayat profesional, kami mengetahui bahwa Bapak dan Pak Hartono pernah berkolaborasi erat di PT Sentosa Abadi Group.
-
-Pak Hartono saat ini membutuhkan referensi pengalaman nyata dari rekan pelaku usaha hospitality/F&B yang sudah menggunakan sistem KasirNusa. Apakah Bapak berkenan bila nama Bapak kami cantumkan sebagai kontak referensi rekanan untuk Pak Hartono?
-
-Dukungan Bapak akan sangat berharga bagi kami. Terima kasih banyak atas kepercayaan Pak Budi selama ini pada KasirNusa.
-
-Salam hormat,
-Wahyu Nugroho
-Account Manager · KasirNusa
-              </div>
-            </div>
-
-            <div class="mt-4 p-3 rounded-xl bg-purple-50 border border-purple-200 text-xs text-purple-800">
-              <strong>💡 Hasil yang diharapkan:</strong> Budi Santoso menghubungi Hartono Gunawan secara informal: <em>"Ton, tim KasirNusa kemarin sebut deal dengan Nirwana. Saiyo pakai mereka di 30 cabang aman dan stabil, recommended."</em> Deal langsung closed won!
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ======================================================== -->
-  <!-- FULL INTERACTIVE NEURAL CONTEXT GRAPH CANVAS            -->
-  <!-- ======================================================== -->
-  <section id="demo" class="py-20 bg-gradient-to-b from-blue-700 via-blue-800 to-slate-950 text-white relative overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto mb-10">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-semibold mb-3">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          <span>Live Neural Graph Canvas</span>
-        </div>
-        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">
-          Peta Graph Relasi KasirNusa
-        </h2>
-        <p class="mt-3 text-sm sm:text-base text-blue-100 max-w-xl mx-auto">
-          Eksplorasi interaktif seluruh entitas: Karyawan KasirNusa, Prospek, Decision Maker, Pelanggan Referensi, Riwayat Kerja Bersama, dan Preseden Keputusan.
-        </p>
-
-        <!-- Filter Controls -->
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
-          <button onclick="setGraphFilter('all')" id="filter-all" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-blue-700 shadow-md">
-            🌐 Semua Context (35+ Node)
-          </button>
-          <button onclick="setGraphFilter('p01')" id="filter-p01" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 text-white transition-all">
-            🎯 P01 Mandala Focus
-          </button>
-          <button onclick="setGraphFilter('p04')" id="filter-p04" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 text-white transition-all">
-            🏨 P04 Nirwana Focus
-          </button>
-          <button onclick="setGraphFilter('dm')" id="filter-dm" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 text-white transition-all">
-            👑 Decision Makers Only
-          </button>
-          <button onclick="resetGraphPhysics()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold border border-white/30 text-white hover:bg-white/10">
-            ↺ Re-center
-          </button>
-        </div>
-      </div>
-
-      <!-- Graph Stage Box -->
-      <div class="relative w-full h-[580px] rounded-3xl bg-slate-900/95 border border-white/15 overflow-hidden shadow-2xl backdrop-blur-md">
-        
-        <!-- Live HUD Status -->
-        <div class="absolute top-4 left-4 z-10 pointer-events-none flex flex-col gap-2">
-          <div class="px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 text-xs font-mono text-blue-200">
-            ACTIVE NODES: <span id="hud-node-count" class="text-white font-bold">38</span> • TOTAL EDGES: <span class="text-emerald-400 font-bold">42</span>
-          </div>
-          <div class="px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 text-xs font-mono text-slate-300">
-            CURRENT INSPECT: <span id="hud-active-account" class="text-blue-400 font-bold">Sari Puspita (AM C01)</span>
-          </div>
-        </div>
-
-        <!-- Canvas -->
-        <canvas id="graphCanvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
-
-        <!-- Node Details Floating Drawer -->
-        <div id="node-inspector" class="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-96 p-5 rounded-2xl bg-slate-900/95 border border-white/20 shadow-2xl backdrop-blur-xl">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
-            <span id="inspect-category" class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
-              KASIRNUSA INTERNAL
-            </span>
-            <span class="text-[10px] font-mono text-slate-400">ID: <b id="inspect-id" class="text-emerald-400">E03</b></span>
-          </div>
-          <h4 id="inspect-title" class="font-bold text-sm text-white">Sari Puspita</h4>
-          <p id="inspect-desc" class="text-xs text-slate-300 mt-1 leading-relaxed">
-            Account Manager untuk C01 Kopi Lintas Nusantara &amp; C03 Apotek Sehat Sentosa. Memiliki hubungan kerja erat 3+ tahun dengan Rina Hapsari.
-          </p>
-          <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-            <span id="inspect-role" class="text-slate-400 text-[11px]">Role: Account Manager</span>
-            <button id="inspect-btn-path" onclick="focusInspectNodeInPath()" class="text-blue-400 hover:text-blue-300 font-semibold text-xs flex items-center gap-1">
-              Fokuskan di Finder ⚡
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ======================================================== -->
-  <!-- 6 DATA SOURCES CONNECTED (BENTO GRID)                   -->
-  <!-- ======================================================== -->
-  <section id="sources" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center max-w-3xl mx-auto mb-14">
-      <div class="pill-badge mb-3">
-        <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-        <span>Integrasi Lintas Sistem</span>
-      </div>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-        6 Sumber Data Membentuk Context Graph
-      </h2>
-      <p class="mt-3 text-sm sm:text-base text-slate-500">
-        Insight tidak muncul dari satu tabel CRM biasa, melainkan hasil sintesis menyeluruh antar data operasional dan keputusan.
-      </p>
-    </div>
-
-    <!-- 6 Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      
-      <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
-        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg mb-4">
-          🏢
-        </div>
-        <h4 class="font-bold text-base text-slate-900">CRM Accounts &amp; Contacts</h4>
-        <div class="text-xs font-mono text-blue-600 mt-1 font-semibold">45 Akun • 160 Kontak • 25 Deal</div>
-        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-          Menyimpan profil akun prospek/pelanggan, daftar kontak eksekutif, dan status tahapan deal pipeline aktif.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
-        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg mb-4">
-          📧
-        </div>
-        <h4 class="font-bold text-base text-slate-900">Email &amp; Catatan Meeting</h4>
-        <div class="text-xs font-mono text-purple-600 mt-1 font-semibold">350 Dokumen Interaksi JSONL</div>
-        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-          Menyimpan teks percakapan nyata: kepindahan Rina (<span class="evidence-tag">I0290</span>), Fajar mengakui batas wewenangnya (<span class="evidence-tag">I0343</span>), dan syarat referensi P04 (<span class="evidence-tag">I0335</span>).
-        </p>
-      </div>
-
-      <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg mb-4">
-          👥
-        </div>
-        <h4 class="font-bold text-base text-slate-900">Riwayat Jabatan &amp; Organisasi</h4>
-        <div class="text-xs font-mono text-emerald-600 mt-1 font-semibold">218 Entri Riwayat Kerja</div>
-        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-          Menghubungkan orang yang pernah sekantor di masa lalu: Budi Santoso &amp; Hartono Gunawan (5 thn di Sentosa Abadi) serta kepindahan Rina dari C01 ke P01.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
-        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg mb-4">
-          📋
-        </div>
-        <h4 class="font-bold text-base text-slate-900">Kontrak &amp; Billing</h4>
-        <div class="text-xs font-mono text-amber-600 mt-1 font-semibold">40 Kontrak Aktif KasirNusa</div>
-        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-          Struktur harga paket Rp 350.000/outlet, tanggal renewal, dan riwayat diskon yang terikat pada keputusan manajemen.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
-        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-lg mb-4">
-          ⚖️
-        </div>
-        <h4 class="font-bold text-base text-slate-900">Log Keputusan Eksekutif</h4>
-        <div class="text-xs font-mono text-rose-600 mt-1 font-semibold">30 Entri Approval &amp; Kebijakan</div>
-        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-          Preseden D-2025-11 (diskon volume 15% C01), D-2025-02 (tolak diskon 20%), dan janji fitur akuntansi FEAT-07.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
-        <div class="w-12 h-12 rounded-2xl bg-cyan-100 text-cyan-700 flex items-center justify-center font-bold text-lg mb-4">
-          📊
-        </div>
-        <h4 class="font-bold text-base text-slate-900">Product Usage &amp; Support</h4>
-        <div class="text-xs font-mono text-cyan-600 mt-1 font-semibold">620 Outlet • 640 Tiket Support</div>
-        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-          Data kepuasan pelanggan: C06 stabil dengan ekspansi 10 cabang, C01 kehilangan champion, C03 kendala sinkronisasi offline (BUG-401).
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ======================================================== -->
-  <!-- LIVE QUERY ENGINE & PERTANYAAN JURI                     -->
-  <!-- ======================================================== -->
-  <section id="live-query" class="py-20 bg-slate-50 border-t border-slate-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div class="text-center max-w-3xl mx-auto mb-10">
-        <div class="pill-badge mb-3">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-          <span>Simulasi Pertanyaan Juri</span>
-        </div>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Live Query &amp; Tanya Langsung ke Graph
-        </h2>
-        <p class="mt-3 text-sm text-slate-600">
-          Uji kemampuan reasoning model dan keterkaitan data: klik salah satu dari 10 preset pertanyaan lomba atau ketik pertanyaan pencarian apa pun.
-        </p>
-      </div>
-
-      <!-- Preset Question Buttons Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
-        
-        <button onclick="runQueryEngine('path_p01')" id="qbtn-path_p01" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-blue-600 text-sm">🥇</span>
-          <span>P01: Jalur terbaik ke decision maker Mandala?</span>
-        </button>
-
-        <button onclick="runQueryEngine('path_p04')" id="qbtn-path_p04" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-purple-600 text-sm">🥇</span>
-          <span>P04: Jalur terbaik ke decision maker Nirwana?</span>
-        </button>
-
-        <button onclick="runQueryEngine('who_knows_who')" id="qbtn-who_knows_who" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-emerald-600 text-sm">🤝</span>
-          <span>Koneksi tersembunyi via riwayat Sentosa Abadi?</span>
-        </button>
-
-        <button onclick="runQueryEngine('cross_track')" id="qbtn-cross_track" class="text-left p-3.5 rounded-2xl bg-blue-50 border border-blue-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-bold text-blue-900 flex items-start gap-2">
-          <span class="text-blue-600 text-sm">⭐</span>
-          <span>Temuan Lintas Track: CS Churn ↔ Sales (Bonus +5)?</span>
-        </button>
-
-        <button onclick="runQueryEngine('precedent')" id="qbtn-precedent" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-amber-600 text-sm">⚖️</span>
-          <span>Preseden diskon: D-2025-11 vs Tolak 20% D-2025-02?</span>
-        </button>
-
-        <button onclick="runQueryEngine('risk_p01')" id="qbtn-risk_p01" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-rose-600 text-sm">⚠️</span>
-          <span>Risiko FEAT-07 belum rilis di P01 &amp; C01?</span>
-        </button>
-
-        <button onclick="runQueryEngine('tim2_dm')" id="qbtn-tim2_dm" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-indigo-600 text-sm">👥</span>
-          <span>Tim 2: Siapa sebenarnya decision maker P01 &amp; P03?</span>
-        </button>
-
-        <button onclick="runQueryEngine('tim4_accel')" id="qbtn-tim4_accel" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-cyan-600 text-sm">🚀</span>
-          <span>Tim 4: Deal prioritas &amp; akselerasi pipeline?</span>
-        </button>
-
-        <button onclick="runQueryEngine('tim5_expansion')" id="qbtn-tim5_expansion" class="text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 hover:shadow-sm transition-all text-xs font-semibold text-slate-800 flex items-start gap-2">
-          <span class="text-emerald-600 text-sm">📈</span>
-          <span>Tim 5: Peluang ekspansi C06 (10 outlet Jakarta)?</span>
-        </button>
-
-      </div>
-
-      <!-- Free Search Input -->
-      <div class="flex gap-2 max-w-2xl mx-auto mb-8">
-        <input type="text" id="custom-query-input" placeholder="Ketik kata kunci (misal: Budi Santoso, Hartono, Diskon 20%, FEAT-07)..." class="flex-1 px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" onkeydown="if(event.key==='Enter') executeCustomQuery()">
-        <button onclick="executeCustomQuery()" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm">
-          Cari Graph
-        </button>
-      </div>
-
-      <!-- Query Output Result Box -->
-      <div id="query-result-box" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg min-h-[160px] flex flex-col justify-center">
-        <!-- Rendered dynamically -->
-        <div class="text-center text-slate-400 py-6">
-          <svg class="w-10 h-10 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-          <p class="text-xs">Pilih salah satu tombol preset pertanyaan di atas atau ketik kata kunci pencarian.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="border-t border-slate-100 bg-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-          KN
-        </div>
-        <span class="font-bold text-sm text-slate-900">KASIRNUSA // Context Graph — Tim 3 Sales Track</span>
-      </div>
-
-      <div class="text-xs text-slate-500 text-center sm:text-right">
-        Studi Kasus Hackathon Context Graphs · Hak Cipta Tim 3
-      </div>
-    </div>
-  </footer>
-
-  <!-- ======================================================== -->
-  <!-- MODAL: EXECUTIVE JURY SUMMARY CHEAT-SHEET                -->
-  <!-- ======================================================== -->
-  <div id="jury-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 p-4">
-    <div class="w-full max-w-2xl max-h-[85vh] bg-white rounded-3xl p-6 sm:p-8 flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
-      
-      <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
-        <div>
-          <h3 class="text-xl font-extrabold text-slate-900">Executive Summary untuk Juri</h3>
-          <p class="text-xs text-slate-500">Ringkasan jawaban wajib Tim 3 (Sales - Relationship Path Finder)</p>
-        </div>
-        <button onclick="closeModal('jury-modal')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800">
-          ✕
-        </button>
-      </div>
-
-      <div class="flex-1 overflow-y-auto space-y-4 text-xs text-slate-700 pr-1">
-        
-        <div class="p-4 rounded-2xl bg-blue-50/80 border border-blue-200">
-          <h4 class="font-bold text-sm text-blue-900 mb-1">1. Prospek P01 (Grup Ritel Mandala - Rp 252 Jt)</h4>
-          <p>• <strong>Decision Maker Sebenarnya:</strong> Rina Hapsari (K017, GM Operations per 1 Sep 2026). Fajar IT Mgr mengonfirmasi ia bukan decision maker komersial (<span class="evidence-tag">I0343</span>).</p>
-          <p>• <strong>Jalur Terbaik:</strong> Sari Puspita (AM C01) ➔ Rina Hapsari (ex-C01) ➔ Steven Wijaya (Dirut).</p>
-          <p>• <strong>Skor Kekuatan:</strong> 9.2 / 10 (3+ tahun hubungan profesional, 13 interaksi positif di C01).</p>
-          <p>• <strong>Preseden:</strong> D-2025-11 menyetujui diskon 15% untuk 42 outlet di C01; dapat dijadikan dasar tawaran volume 60 outlet di P01.</p>
-        </div>
-
-        <div class="p-4 rounded-2xl bg-purple-50/80 border border-purple-200">
-          <h4 class="font-bold text-sm text-purple-900 mb-1">2. Prospek P04 (Nirwana Hotel &amp; Resto - Rp 147 Jt)</h4>
-          <p>• <strong>Decision Maker Sebenarnya:</strong> Hartono Gunawan (K028, Direktur Utama).</p>
-          <p>• <strong>Akar Masalah:</strong> Hartono minta referensi pengguna sejenis (<span class="evidence-tag">I0335</span>).</p>
-          <p>• <strong>Jalur Terbaik:</strong> Wahyu Nugroho (AM C06) ➔ Budi Santoso (CFO C06) ➔ Hartono Gunawan.</p>
-          <p>• <strong>Bukti Relasi:</strong> Budi dan Hartono bekerja bersama selama 5 tahun (2015–2019) di <strong>PT Sentosa Abadi Group</strong>. C06 puas (NPS 9, ekspansi 10 outlet Jakarta).</p>
-          <p>• <strong>Skor Kekuatan:</strong> 8.5 / 10.</p>
-        </div>
-
-        <div class="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200">
-          <h4 class="font-bold text-sm text-emerald-900 mb-1">3. Temuan Lintas Track Mandiri (Bonus Nilai +5)</h4>
-          <p>• <strong>CS Churn di C01 ➔ Menjadi Sales Expansion di P01:</strong> Kepindahan Rina melemahkan retensi C01 (CFO baru Yoga Pratama melirik KasirPro), tapi membuka jalan mulus pengadaan 60 gerai P01.</p>
-          <p>• <strong>CS Customer Advocacy C06 ➔ Menyelamatkan Negosiasi P04:</strong> Keberhasilan pendampingan AM C06 dikonversi langsung menjadi amunisi peer reference untuk Dirut P04.</p>
-        </div>
-
-      </div>
-
-      <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-        <span class="text-xs text-slate-400">Tim 3 Hackathon Context Graphs</span>
-        <button onclick="closeModal('jury-modal')" class="px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors">
-          Tutup
-        </button>
-      </div>
-
+    <!-- Canvas Filter Controls -->
+    <div class="flex items-center gap-1.5 text-xs">
+      <span class="text-[11px] font-mono text-zinc-500 mr-1 hidden sm:inline">Filter:</span>
+      <button onclick="setFilter('all')" id="btn-f-all" class="h-7 px-2.5 rounded-md text-[11px] font-semibold bg-zinc-800 text-blue-400 border border-blue-500/40">All Graph</button>
+      <button onclick="setFilter('p01')" id="btn-f-p01" class="h-7 px-2.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-400 hover:bg-zinc-800">P01 Focus</button>
+      <button onclick="setFilter('p04')" id="btn-f-p04" class="h-7 px-2.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-400 hover:bg-zinc-800">P04 Focus</button>
+      <button onclick="resetCanvasPosition()" class="h-7 px-2.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-400 hover:bg-zinc-800 border border-zinc-800">↺ Reset View</button>
     </div>
   </div>
 
-  <!-- Load Graph Data -->
+  <!-- Main Split Workbench -->
+  <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+
+    <!-- Center/Left: Interactive Canvas Graph Engine -->
+    <div class="flex-1 relative bg-zinc-950 flex flex-col overflow-hidden min-h-[350px]">
+      
+      <!-- Canvas Overlay HUD -->
+      <div class="absolute top-3 left-3 z-10 pointer-events-none flex flex-col gap-1.5">
+        <div class="px-2.5 py-1 rounded-md bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono text-zinc-300 backdrop-blur-sm">
+          NODES: <span id="hud-nodes" class="text-white font-bold">38</span> • EDGES: <span id="hud-edges" class="text-white font-bold">42</span>
+        </div>
+        <div id="hud-path-badge" class="px-2.5 py-1 rounded-md bg-blue-950/80 border border-blue-800/80 text-[11px] font-mono text-blue-300 backdrop-blur-sm hidden">
+          ACTIVE PATH: <span id="hud-path-text" class="text-white font-bold"></span>
+        </div>
+      </div>
+
+      <!-- Canvas Instructions Overlay -->
+      <div class="absolute bottom-3 left-3 z-10 pointer-events-none text-[10px] font-mono text-zinc-500 bg-zinc-900/80 px-2 py-1 rounded border border-zinc-800">
+        🖱 Drag node untuk menggeser • Scroll untuk Zoom • Klik node untuk inspeksi
+      </div>
+
+      <!-- Graph Canvas -->
+      <canvas id="graph-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
+
+    </div>
+
+    <!-- Right: Multifunction Inspector & Strategy Workbench -->
+    <div class="w-full lg:w-[480px] xl:w-[540px] border-t lg:border-t-0 lg:border-l border-zinc-800 bg-zinc-900 flex flex-col flex-shrink-0 z-20 overflow-hidden">
+      
+      <!-- Workbench Tabs Header -->
+      <div class="h-10 border-b border-zinc-800 bg-zinc-950 px-3 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-1">
+          <button onclick="switchTab('path')" id="tab-btn-path" class="px-3 py-1.5 rounded-t text-xs font-semibold border-b-2 border-blue-500 text-blue-400 bg-zinc-900">
+            Jalur &amp; Strategi
+          </button>
+          <button onclick="switchTab('draft')" id="tab-btn-draft" class="px-3 py-1.5 rounded-t text-xs font-semibold border-b-2 border-transparent text-zinc-400 hover:text-zinc-200">
+            Draft Pesan Intro
+          </button>
+          <button onclick="switchTab('query')" id="tab-btn-query" class="px-3 py-1.5 rounded-t text-xs font-semibold border-b-2 border-transparent text-zinc-400 hover:text-zinc-200">
+            Tanya Graph (Juri)
+          </button>
+          <button onclick="switchTab('node')" id="tab-btn-node" class="px-3 py-1.5 rounded-t text-xs font-semibold border-b-2 border-transparent text-zinc-400 hover:text-zinc-200">
+            Node Detail
+          </button>
+        </div>
+
+        <span id="tab-score-badge" class="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+          Score: 9.2/10
+        </span>
+      </div>
+
+      <!-- Tab Content 1: Path & Strategy Result -->
+      <div id="pane-path" class="flex-1 overflow-y-auto p-4 space-y-4">
+        
+        <!-- Path Summary Card -->
+        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800/80">
+            <span class="text-[10px] font-mono text-zinc-400 uppercase tracking-wider font-bold">Hasil Perhitungan BFS Shortest Path</span>
+            <span id="path-hops-count" class="text-xs font-mono font-bold text-blue-400">2 Hops</span>
+          </div>
+
+          <!-- Flow Breadcrumbs -->
+          <div id="path-flow-container" class="py-2 flex items-center gap-2 overflow-x-auto">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Strategy Analysis Box -->
+        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+          <div class="flex items-center gap-2 text-xs font-bold text-zinc-200">
+            <span class="text-blue-500">🎯</span>
+            <span id="strategy-headline">Analisis Pendekatan Strategis</span>
+          </div>
+          <p id="strategy-body" class="text-xs text-zinc-300 leading-relaxed font-sans">
+            <!-- Rendered by JS -->
+          </p>
+        </div>
+
+        <!-- Evidence Citations List -->
+        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2.5">
+          <div class="flex items-center justify-between text-xs font-bold text-zinc-200">
+            <span>Bukti Lintas Dataset</span>
+            <span class="text-[10px] font-mono text-zinc-500">Interaksi &amp; Riwayat</span>
+          </div>
+          <div id="evidence-list" class="space-y-2">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Decision Log Precedent & Policy Box -->
+        <div class="p-4 rounded-xl bg-zinc-950 border border-amber-900/40 text-xs text-amber-200/90 space-y-1.5">
+          <div class="font-bold flex items-center gap-1.5 text-amber-400">
+            <span>⚖️ Preseden Log Keputusan &amp; Aturan Diskon:</span>
+          </div>
+          <p id="precedent-text" class="text-zinc-300 leading-relaxed">
+            <!-- Rendered by JS -->
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Tab Content 2: Draft Pesan Intro (Output Wajib) -->
+      <div id="pane-draft" class="flex-1 overflow-y-auto p-4 space-y-4 hidden">
+        
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="text-sm font-bold text-white">Draft Pesan Introduksi (Warm Intro)</h4>
+            <p class="text-[11px] text-zinc-400">Template email / WhatsApp siap kirim yang memanfaatkan relasi internal champion.</p>
+          </div>
+          <button onclick="copyDraftMessage()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95 shadow-md">
+            <span>📋 Salin Pesan</span>
+          </button>
+        </div>
+
+        <!-- Message Box -->
+        <div class="rounded-xl bg-zinc-950 border border-zinc-800 p-4 font-mono text-xs text-zinc-300 space-y-3">
+          <div class="pb-2 border-b border-zinc-800/80 text-zinc-400 space-y-1">
+            <div><span class="text-zinc-500">Dari:</span> <span id="draft-from" class="text-zinc-200"></span></div>
+            <div><span class="text-zinc-500">Kepada:</span> <span id="draft-to" class="text-zinc-200"></span></div>
+            <div><span class="text-zinc-500">Subjek:</span> <span id="draft-subject" class="text-blue-400 font-semibold"></span></div>
+          </div>
+          
+          <div id="draft-content" class="text-xs text-zinc-200 font-sans whitespace-pre-line leading-relaxed pt-1">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Rationale Notes -->
+        <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-400 space-y-1.5">
+          <div class="font-bold text-zinc-300">Alasan &amp; Prinsip Outreach:</div>
+          <ul id="draft-rationale" class="list-disc pl-4 space-y-1 leading-relaxed">
+            <!-- Injected by JS -->
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Tab Content 3: Live Query (Juri Simulation) -->
+      <div id="pane-query" class="flex-1 overflow-y-auto p-4 space-y-3.5 hidden">
+        <div>
+          <h4 class="text-sm font-bold text-white">Tanya Langsung ke Graph</h4>
+          <p class="text-[11px] text-zinc-400">Pilih pertanyaan juri di bawah ini untuk melihat penalaran graph lintas sumber:</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-2">
+          <button onclick="triggerQuery('path_p01')" class="text-left p-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-xs text-zinc-300 font-medium transition-colors flex items-center justify-between">
+            <span>🥇 P01: Jalur terbaik ke decision maker Mandala?</span>
+            <span class="text-blue-400 font-mono text-[10px]">Rp 252M</span>
+          </button>
+          <button onclick="triggerQuery('path_p04')" class="text-left p-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-xs text-zinc-300 font-medium transition-colors flex items-center justify-between">
+            <span>🥇 P04: Jalur terbaik ke decision maker Nirwana?</span>
+            <span class="text-purple-400 font-mono text-[10px]">Rp 147M</span>
+          </button>
+          <button onclick="triggerQuery('who_knows_who')" class="text-left p-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-xs text-zinc-300 font-medium transition-colors flex items-center justify-between">
+            <span>🤝 Koneksi riwayat kerja di PT Sentosa Abadi?</span>
+            <span class="text-emerald-400 font-mono text-[10px]">Overlap 5th</span>
+          </button>
+          <button onclick="triggerQuery('cross_track')" class="text-left p-2.5 rounded-lg bg-blue-950/40 hover:bg-blue-950/70 border border-blue-800/60 text-xs text-blue-200 font-bold transition-colors flex items-center justify-between">
+            <span>⭐ Temuan Lintas Track: CS Churn ↔ Sales Growth</span>
+            <span class="text-amber-400 font-mono text-[10px]">Bonus +5</span>
+          </button>
+          <button onclick="triggerQuery('precedent')" class="text-left p-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-xs text-zinc-300 font-medium transition-colors flex items-center justify-between">
+            <span>⚖️ Preseden diskon: D-2025-11 vs Tolak D-2025-02?</span>
+            <span class="text-amber-400 font-mono text-[10px]">Policy</span>
+          </button>
+          <button onclick="triggerQuery('risk_p01')" class="text-left p-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-xs text-zinc-300 font-medium transition-colors flex items-center justify-between">
+            <span>⚠️ Risiko produk: FEAT-07 belum rilis di P01 &amp; C01?</span>
+            <span class="text-rose-400 font-mono text-[10px]">Risk</span>
+          </button>
+          <button onclick="triggerQuery('tim4_accel')" class="text-left p-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-xs text-zinc-300 font-medium transition-colors flex items-center justify-between">
+            <span>🚀 Deal Prioritas Pipeline (Rp 399 Juta)?</span>
+            <span class="text-cyan-400 font-mono text-[10px]">Pipeline</span>
+          </button>
+        </div>
+
+        <!-- Query Answer Display Box -->
+        <div id="query-answer-box" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 mt-2">
+          <div id="query-answer-title" class="text-xs font-bold text-blue-400 font-mono">
+            Pilih pertanyaan di atas untuk melihat pembuktian graph.
+          </div>
+          <div id="query-answer-path" class="text-[11px] font-mono text-zinc-400 bg-zinc-900 p-2 rounded">
+            -
+          </div>
+          <div id="query-answer-body" class="text-xs text-zinc-300 leading-relaxed font-sans">
+            -
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tab Content 4: Selected Node Inspector -->
+      <div id="pane-node" class="flex-1 overflow-y-auto p-4 space-y-4 hidden">
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+          <div>
+            <span id="inspect-tag" class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-900/40 text-blue-300 border border-blue-800 uppercase">
+              NODE
+            </span>
+            <h3 id="inspect-name" class="text-base font-bold text-white mt-1">Sari Puspita</h3>
+          </div>
+          <span id="inspect-id" class="text-xs font-mono text-zinc-500 font-bold">E03</span>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <div class="text-[10px] font-mono uppercase text-zinc-500">Jabatan &amp; Peran:</div>
+            <div id="inspect-role" class="text-zinc-200 font-semibold mt-0.5">Account Manager (AM C01, C03)</div>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-mono uppercase text-zinc-500">Deskripsi Konteks:</div>
+            <div id="inspect-desc" class="text-zinc-300 leading-relaxed mt-0.5">
+              Account Manager KasirNusa yang mendampingi Kopi Lintas Nusantara selama 3+ tahun.
+            </div>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-mono uppercase text-zinc-500">Koneksi Terkait di Graph:</div>
+            <div id="inspect-connections" class="mt-1 space-y-1">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+        <button onclick="setNodeAsSource()" class="w-full py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors">
+          Jadikan Titik Awal (Source) di Path Finder ➔
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Modal: Jury Summary Cheat-Sheet -->
+  <div id="jury-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200 p-4">
+    <div class="w-full max-w-2xl bg-zinc-900 rounded-2xl border border-zinc-800 p-6 flex flex-col max-h-[85vh] shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-4">
+        <div>
+          <h3 class="text-lg font-bold text-white">Summary Evaluasi Juri — Tim 3</h3>
+          <p class="text-xs text-zinc-400">Jawaban Pertanyaan Inti: "Lewat siapa jalur terbaik menuju decision maker?"</p>
+        </div>
+        <button onclick="closeModal('jury-summary-modal')" class="text-zinc-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-4 text-xs text-zinc-300 pr-1">
+        <div class="p-3.5 rounded-xl bg-zinc-950 border border-blue-900/50">
+          <div class="font-bold text-blue-400 text-sm mb-1">1. Prospek P01 (Grup Ritel Mandala - Rp 252 Jt/thn)</div>
+          <p>• <strong>Decision Maker:</strong> Rina Hapsari (GM Operations baru, ex-Head of Ops C01). Fajar IT Manager menegaskan dirinya bukan decision maker (I0343).</p>
+          <p>• <strong>Jalur Terbaik:</strong> Sari Puspita (AM C01) ➔ Rina Hapsari (13 interaksi positif) ➔ Steven Wijaya (Dirut).</p>
+          <p>• <strong>Preseden:</strong> D-2025-11 (diskon 15% untuk 42 outlet C01) menjadi dasar tawaran diskon volume 60 outlet.</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-zinc-950 border border-purple-900/50">
+          <div class="font-bold text-purple-400 text-sm mb-1">2. Prospek P04 (Nirwana Hotel &amp; Resto - Rp 147 Jt/thn)</div>
+          <p>• <strong>Decision Maker:</strong> Hartono Gunawan (Direktur Utama P04). Negosiasi macet 30 hari karena minta referensi rekanan sejenis (I0335).</p>
+          <p>• <strong>Jalur Terbaik:</strong> Wahyu Nugroho (AM C06) ➔ Budi Santoso (CFO C06) ➔ Hartono Gunawan.</p>
+          <p>• <strong>Koneksi Kunci:</strong> Budi Santoso dan Hartono pernah sekantor selama 5 tahun (2015–2019) di PT Sentosa Abadi Group.</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-zinc-950 border border-emerald-900/50">
+          <div class="font-bold text-emerald-400 text-sm mb-1">3. Nilai Tambah Lintas Track (Bonus +5)</div>
+          <p>• <strong>CS Churn ↔ Sales Opportunity:</strong> Kepergian Rina melemahkan retensi C01, namun kepindahannya ke P01 membuka peluang pengadaan sistem kasir 60 gerai.</p>
+          <p>• <strong>CS Success ↔ Sales Closing:</strong> Keberhasilan pendampingan AM C06 (NPS 9) dikonversi menjadi peer reference penutup kesepakatan P04.</p>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-zinc-800 flex justify-end">
+        <button onclick="closeModal('jury-summary-modal')" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Data File -->
   <script src="graph-data.js"></script>
 
-  <!-- Application Logic -->
+  <!-- PURE JAVASCRIPT APPLICATION CODE -->
   <script>
-    // ===== 1. INTERACTIVE PATH FINDER LOGIC =====
-    const sourcesList = [
-      { id: 'E03', label: 'Sari Puspita (Account Manager C01, C03)' },
-      { id: 'E04', label: 'Wahyu Nugroho (Account Manager C06 Saiyo)' },
-      { id: 'E06', label: 'Bagus Prakoso (Sales Executive P01 & P04)' },
-      { id: 'E07', label: 'Citra Ayuningtyas (Sales Executive P02)' },
-      { id: 'E08', label: 'Doni Saputra (Sales Executive P03)' },
-      { id: 'E01', label: 'Andi Wiratama (VP Sales KasirNusa)' },
-      { id: 'K116', label: 'Budi Santoso (CFO Saiyo Group C06)' },
+    // ===== 1. DATA INITIALIZATION =====
+    const sources = [
+      { id: 'E03', label: 'Sari Puspita (AM C01 & C03)' },
+      { id: 'E04', label: 'Wahyu Nugroho (AM C06 Saiyo)' },
+      { id: 'E06', label: 'Bagus Prakoso (Sales Exec P01 & P04)' },
+      { id: 'E07', label: 'Citra Ayuningtyas (Sales Exec P02)' },
+      { id: 'E08', label: 'Doni Saputra (Sales Exec P03)' },
+      { id: 'E01', label: 'Andi Wiratama (VP Sales)' },
+      { id: 'K116', label: 'Budi Santoso (CFO C06 Saiyo)' },
       { id: 'K056', label: 'Michael Tanoto (Dirut C01 Kopi Lintas)' }
     ];
 
-    const targetsList = [
-      { id: 'K017', label: 'Rina Hapsari (GM Operations P01 / ex-C01)' },
-      { id: 'K089', label: 'Steven Wijaya (Direktur Utama P01)' },
-      { id: 'K028', label: 'Hartono Gunawan (Direktur Utama P04)' },
-      { id: 'K065', label: 'Yuli Astuti (Purchasing Manager P04)' },
-      { id: 'K076', label: 'Teddy Kurniawan (Pemilik Teras Kafe P02)' },
-      { id: 'K114', label: 'Hanif Maulana (Direktur Klinik Pratama P03)' },
+    const targets = [
+      { id: 'K017', label: 'Rina Hapsari (GM Ops P01 / ex-C01)' },
+      { id: 'K089', label: 'Steven Wijaya (Dirut P01 Mandala)' },
+      { id: 'K028', label: 'Hartono Gunawan (Dirut P04 Nirwana)' },
+      { id: 'K065', label: 'Yuli Astuti (Purchasing P04)' },
+      { id: 'K052', label: 'Fajar Nugraha (IT Manager P01)' },
+      { id: 'K076', label: 'Teddy Kurniawan (Pemilik P02 Teras Kafe)' },
+      { id: 'K114', label: 'Hanif Maulana (Dirut P03 Pratama)' },
       { id: 'K049', label: 'Ratna Dewi (Kepala Apotek P03)' },
-      { id: 'P01', label: 'Grup Ritel Mandala (Akun P01 - 60 Outlet)' },
-      { id: 'P04', label: 'Nirwana Hotel & Resto (Akun P04 - 35 Outlet)' }
+      { id: 'P01', label: 'Grup Ritel Mandala (Akun P01)' },
+      { id: 'P04', label: 'Nirwana Hotel & Resto (Akun P04)' }
     ];
 
-    function initPathFinderSelects() {
-      const sSelect = document.getElementById('finder-source');
-      const tSelect = document.getElementById('finder-target');
-      if (!sSelect || !tSelect) return;
+    let activeFilter = 'all';
+    let highlightedPath = ['E03', 'K017', 'K089'];
+    let selectedNode = null;
+    let currentScore = '9.2';
 
-      sSelect.innerHTML = sourcesList.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
-      tSelect.innerHTML = targetsList.map(t => `<option value="${t.id}">${t.label}</option>`).join('');
+    // Populate dropdowns
+    function initDropdowns() {
+      const sSel = document.getElementById('sel-source');
+      const tSel = document.getElementById('sel-target');
+      if (!sSel || !tSel) return;
 
-      sSelect.value = 'E03';
-      tSelect.value = 'K017';
+      sSel.innerHTML = sources.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+      tSel.innerHTML = targets.map(t => `<option value="${t.id}">${t.label}</option>`).join('');
+
+      sSel.value = 'E03';
+      tSel.value = 'K017';
     }
 
-    function selectPreset(sId, tId) {
-      const sSelect = document.getElementById('finder-source');
-      const tSelect = document.getElementById('finder-target');
-      if (sSelect) sSelect.value = sId;
-      if (tSelect) tSelect.value = tId;
-      
-      calculateAndRenderPath();
-      
-      const widget = document.getElementById('path-finder');
-      if (widget) {
-        widget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-
-    function findBfsShortestPath(startId, targetId) {
-      if (startId === targetId) return { path: [startId], edges: [] };
-      if (!window.GRAPH_DATA || !window.GRAPH_DATA.nodes || !window.GRAPH_DATA.edges) return null;
+    // ===== 2. DETERMINISTIC BFS GRAPH ENGINE =====
+    function findBfsPath(startId, endId) {
+      if (startId === endId) return { path: [startId], edges: [] };
+      if (!window.GRAPH_DATA) return null;
 
       const adj = {};
       window.GRAPH_DATA.nodes.forEach(n => { adj[n.id] = []; });
@@ -1150,13 +512,13 @@ Account Manager · KasirNusa
       while (queue.length > 0) {
         const path = queue.shift();
         const edgePath = edgeQueue.shift();
-        const current = path[path.length - 1];
+        const cur = path[path.length - 1];
 
-        if (current === targetId) {
+        if (cur === endId) {
           return { path, edges: edgePath };
         }
 
-        const neighbors = adj[current] || [];
+        const neighbors = adj[cur] || [];
         for (const { neighbor, edge } of neighbors) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
@@ -1168,206 +530,207 @@ Account Manager · KasirNusa
       return null;
     }
 
-    function calculateStrengthScore(edges) {
+    function calculateScore(edges) {
       if (!edges || edges.length === 0) return '5.0';
       let total = 0;
-      edges.forEach(e => {
-        total += (e.weight || 6);
-      });
+      edges.forEach(e => { total += (e.weight || 6); });
       const avg = total / edges.length;
       const penalty = Math.max(0, (edges.length - 1) * 0.35);
-      return Math.max(4.2, Math.min(9.8, (avg - penalty))).toFixed(1);
+      return Math.max(4.0, Math.min(9.8, (avg - penalty))).toFixed(1);
     }
 
-    function getNodeBadgeColor(type) {
-      switch (type) {
-        case 'kasirnusa': return 'bg-blue-600/30 text-blue-300 border-blue-500';
-        case 'dm': return 'bg-rose-500/30 text-rose-300 border-rose-500';
-        case 'prospect': return 'bg-amber-500/30 text-amber-300 border-amber-500';
-        case 'customer': return 'bg-emerald-500/30 text-emerald-300 border-emerald-500';
-        case 'org': return 'bg-orange-500/30 text-orange-300 border-orange-500';
-        case 'contact': return 'bg-cyan-500/30 text-cyan-300 border-cyan-500';
-        default: return 'bg-slate-700 text-slate-300 border-slate-600';
-      }
-    }
+    function runBfsPathFinder() {
+      const sId = document.getElementById('sel-source').value;
+      const tId = document.getElementById('sel-target').value;
+      const res = findBfsPath(sId, tId);
 
-    function calculateAndRenderPath() {
-      const sId = document.getElementById('finder-source')?.value;
-      const tId = document.getElementById('finder-target')?.value;
-      const container = document.getElementById('finder-result-container');
-      if (!sId || !tId || !container) return;
-
-      const result = findBfsShortestPath(sId, tId);
-
-      if (!result || !result.path || result.path.length === 0) {
-        container.innerHTML = `
-          <div class="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-center">
-            <p class="text-rose-400 font-bold text-sm">Tidak ditemukan jalur koneksi langsung antara entitas ini dalam Context Graph.</p>
-          </div>
-        `;
+      if (!res || !res.path || res.path.length === 0) {
+        showToast("Tidak ada jalur koneksi langsung antara entitas ini.", false);
         return;
       }
 
-      const nodeObjects = result.path.map(id => {
-        return window.GRAPH_DATA.nodes.find(n => n.id === id) || { id, label: id, type: 'node', role: '' };
-      });
+      highlightedPath = res.path;
+      currentScore = calculateScore(res.edges);
 
-      const score = calculateStrengthScore(result.edges);
-      highlightPathOnCanvas = result.path;
+      document.getElementById('hud-path-badge').classList.remove('hidden');
+      document.getElementById('hud-path-text').innerText = `${res.path[0]} ➔ ${res.path[res.path.length - 1]}`;
+      document.getElementById('tab-score-badge').innerText = `Score: ${currentScore}/10`;
+      document.getElementById('path-hops-count').innerText = `${res.path.length - 1} Hops`;
 
-      // Visual Hop Bar
-      let hopsHtml = `<div class="flex items-center gap-3 overflow-x-auto pb-4 pt-2">`;
-      for (let i = 0; i < nodeObjects.length; i++) {
-        const n = nodeObjects[i];
-        const badgeClass = getNodeBadgeColor(n.type);
-        hopsHtml += `
-          <div class="flex-shrink-0 px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-center min-w-[150px] shadow-md">
-            <div class="text-[10px] font-mono uppercase tracking-wider mb-1 px-2 py-0.5 rounded-full border ${badgeClass} inline-block">${n.type}</div>
-            <div class="font-bold text-sm text-white">${n.label}</div>
-            <div class="text-[11px] text-slate-400 mt-0.5 truncate max-w-[180px]">${n.role || n.type}</div>
+      renderPathAnalysis(sId, tId, res);
+      renderDraftMessage(sId, tId, res);
+      showToast(`Jalur ${sId} ➔ ${tId} ditemukan (${currentScore}/10)!`, true);
+    }
+
+    function setPreset(sId, tId) {
+      document.getElementById('sel-source').value = sId;
+      document.getElementById('sel-target').value = tId;
+      runBfsPathFinder();
+    }
+
+    function renderPathAnalysis(sId, tId, res) {
+      const container = document.getElementById('path-flow-container');
+      const nodesData = res.path.map(id => window.GRAPH_DATA.nodes.find(n => n.id === id) || { id, label: id, type: 'node', role: '' });
+
+      // Flow chips
+      let flowHtml = '';
+      for (let i = 0; i < nodesData.length; i++) {
+        const n = nodesData[i];
+        let colorClass = 'border-blue-500/40 text-blue-300 bg-blue-950/40';
+        if (n.type === 'dm') colorClass = 'border-rose-500/40 text-rose-300 bg-rose-950/40';
+        if (n.type === 'customer') colorClass = 'border-emerald-500/40 text-emerald-300 bg-emerald-950/40';
+        if (n.type === 'prospect') colorClass = 'border-amber-500/40 text-amber-300 bg-amber-950/40';
+
+        flowHtml += `
+          <div class="flex-shrink-0 px-3 py-1.5 rounded-lg border ${colorClass} text-center min-w-[120px]">
+            <div class="text-[9px] font-mono uppercase text-zinc-400 font-bold">${n.type}</div>
+            <div class="text-xs font-bold text-white truncate max-w-[140px]">${n.label}</div>
+            <div class="text-[10px] text-zinc-400 truncate max-w-[140px]">${n.role || n.id}</div>
           </div>
         `;
 
-        if (i < result.edges.length) {
-          const edge = result.edges[i];
-          hopsHtml += `
-            <div class="flex-shrink-0 flex flex-col items-center justify-center px-1">
-              <span class="text-[10px] font-mono text-blue-400 max-w-[120px] text-center leading-tight mb-1">${edge.label}</span>
-              <span class="text-lg text-blue-400 font-bold">➔</span>
+        if (i < res.edges.length) {
+          flowHtml += `
+            <div class="flex-shrink-0 flex flex-col items-center justify-center px-1 text-zinc-500 text-xs font-bold">
+              <span>➔</span>
             </div>
           `;
         }
       }
-      hopsHtml += `</div>`;
+      container.innerHTML = flowHtml;
 
-      // Formulate Strategy & Draft Intro
-      let strategyTitle = "Strategi Outreach & Analisis Jalur:";
-      let strategyDesc = "";
-      let draftText = "";
-      let draftSubject = "";
-      let draftSender = "";
-      let draftReceiver = "";
+      // Strategy & Precedent content
+      const stratHead = document.getElementById('strategy-headline');
+      const stratBody = document.getElementById('strategy-body');
+      const precText = document.getElementById('precedent-text');
+      const evidenceList = document.getElementById('evidence-list');
 
       if ((sId === 'E03' && tId === 'K017') || (sId === 'E03' && tId === 'K089')) {
-        strategyDesc = `Sari Puspita (AM C01) memiliki hubungan kerja 3+ tahun dengan Rina Hapsari (13 interaksi langsung di C01). Rina baru saja menjabat sebagai GM Operations di Mandala Ritel (P01) per 1 September 2026. Karena Fajar IT Manager mengonfirmasi keputusan pengadaan 60 gerai ada di tangan GM Operations baru, pendekatan personal Sari adalah kunci pembuka closing.`;
-        draftSender = "Sari Puspita (sari@kasirnusa.id)";
-        draftReceiver = "Rina Hapsari (rina.hapsari@mandalaritel.co.id)";
-        draftSubject = "Selamat atas posisi barunya di Mandala, Bu Rina!";
-        draftText = `Bu Rina yang baik,\n\nSelamat atas posisi barunya sebagai GM Operations di Grup Ritel Mandala! Senang sekali mendengar kabar baik ini.\n\nSaya dengar Mandala sedang mencari sistem kasir modern untuk 60 gerai. Kebetulan Pak Fajar dari tim IT sudah melihat demo bersama Mas Bagus Prakoso dan responsnya sangat positif.\n\nMengingat Ibu tentu sudah paham betul kapabilitas KasirNusa dari pengalaman operasional 42 outlet Kopi Lintas selama 3 tahun, mungkin Ibu berkenan kami presentasikan langsung bersama Mas Bagus? Kami juga siapkan skema diskon volume enterprise 60 gerai.\n\nSalam hangat,\nSari Puspita (AM KasirNusa)`;
+        stratHead.innerText = "Strategi P01: Internal Champion Bridge (Sari ➔ Rina)";
+        stratBody.innerText = "Sari Puspita (AM C01) mengelola akun Rina Hapsari selama 3+ tahun di Kopi Lintas Nusantara dengan 13 interaksi positif. Fajar Nugraha (IT Mgr) mengonfirmasi via email I0343 bahwa keputusan 60 gerai ada di tangan GM Operations baru (Rina). Sari menghubungi Rina secara personal, mengucapkan selamat atas jabatan barunya, lalu mengajak sesi demo bersama Bagus (Sales).";
+        precText.innerHTML = "<strong>Preseden D-2025-11:</strong> Diskon 15% disetujui VP Sales untuk volume 42 outlet di C01. Untuk Mandala (60 outlet), tawarkan diskon volume resmi 15%–18%. <em>Perhatian:</em> FEAT-07 (Integrasi Akuntansi) tertunda rilis (I0258), jelaskan roadmap secara jujur.";
+        evidenceList.innerHTML = `
+          <div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs"><b class="text-blue-400 font-mono">I0343:</b> Fajar (IT Mgr P01): "Keputusan pengadaan sistem kasir ada di GM Operations baru (Rina Hapsari)."</div>
+          <div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs"><b class="text-emerald-400 font-mono">I0290:</b> Email pamit Rina dari C01 (14 Agu 2026): Hubungan dengan AM Sari sangat hangat.</div>
+          <div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs"><b class="text-amber-400 font-mono">Employment:</b> K017 pindah dari Head of Ops C01 ➔ GM Operations P01 per 1 September 2026.</div>
+        `;
       } else if ((sId === 'E04' && tId === 'K028') || (sId === 'K116' && tId === 'K028')) {
-        strategyDesc = `Budi Santoso (CFO Saiyo Group C06) dan Hartono Gunawan (Dirut P04) adalah mantan rekan kerja selama 5 tahun (2015–2019) di PT Sentosa Abadi Group. Permintaan Dirut Hartono akan 'referensi pengguna sejenis' (I0335) langsung terjawab melalui rekomendasi personal Budi (resto Padang 30 outlet, NPS 9).`;
-        draftSender = "Wahyu Nugroho (wahyu@kasirnusa.id)";
-        draftReceiver = "Budi Santoso (budi.santoso@saiyo.co.id)";
-        draftSubject = "Permohonan Referensi Rekanan - Pak Hartono Gunawan (Nirwana Resto)";
-        draftText = `Selamat siang Pak Budi,\n\nSemoga persiapan ekspansi 10 outlet Saiyo ke Jakarta berjalan lancar.\n\nSaat ini kami sedang dalam tahap negosiasi POS untuk Nirwana Hotel & Resto (35 outlet) yang dipimpin oleh Pak Hartono Gunawan. Kami mengetahui Bapak dan Pak Hartono pernah berkolaborasi erat di PT Sentosa Abadi Group.\n\nPak Hartono membutuhkan referensi pengalaman nyata dari rekan pelaku usaha yang sudah menggunakan sistem KasirNusa. Apakah Bapak berkenan bila nama Bapak kami cantumkan sebagai kontak referensi rekanan untuk Pak Hartono?\n\nTerima kasih banyak atas kepercayaan Pak Budi.\n\nSalam hormat,\nWahyu Nugroho (AM KasirNusa)`;
-      } else if (sId === 'E06' && tId === 'K017') {
-        strategyDesc = `Bagus Prakoso (Sales) sebaiknya tidak melakukan cold outreach sendirian ke Rina. Sari Puspita (AM C01) harus dilibatkan untuk melakukan warm introduction terlebih dahulu, kemudian Bagus memimpin aspek teknis dan komersial proposal.`;
-        draftSender = "Sari Puspita & Bagus Prakoso (KasirNusa)";
-        draftReceiver = "Rina Hapsari (GM Operations P01)";
-        draftSubject = "Pengantar Tim Sales & Solusi Kasir 60 Gerai Mandala";
-        draftText = `Halo Bu Rina, salam kenal dari Bagus Prakoso (Sales Executive KasirNusa). Menyambung pembicaraan hangat Ibu dengan Mbak Sari Puspita, kami telah menyiapkan penawaran komersial khusus untuk 60 gerai Mandala sesuai standar keandalan yang Ibu gunakan sebelumnya di Kopi Lintas.`;
+        stratHead.innerText = "Strategi P04: Executive Peer Referral (Wahyu ➔ Budi ➔ Hartono)";
+        stratBody.innerText = "Deal P04 macet 30 hari di negosiasi karena Yuli Astuti (Purchasing) menyatakan Dirut Hartono Gunawan meminta referensi pengguna sejenis (I0335). Riwayat kerja membuktikan Hartono dan Budi Santoso (CFO C06 Saiyo) pernah bekerja bersama selama 5 tahun (2015–2019) di PT Sentosa Abadi Group. Wahyu (AM C06) meminta kesediaan Budi memberikan referensi rekanan personal ke Hartono.";
+        precText.innerHTML = "<strong>Preseden D-2025-06 & D-2025-02:</strong> Ditolak diskon 20% karena merusak harga pasar, namun menang melalui paket pilot dan referensi terpercaya. Saiyo C06 puas (NPS 9, ekspansi 10 cabang Jakarta I0300).";
+        evidenceList.innerHTML = `
+          <div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs"><b class="text-purple-400 font-mono">I0335:</b> Yuli Purchasing P04: "Dirut kami minta rekomendasi dari pengguna sejenis sebelum tanda tangan."</div>
+          <div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs"><b class="text-blue-400 font-mono">Employment:</b> Budi Santoso &amp; Hartono Gunawan sama-sama di PT Sentosa Abadi Group (2015–2019).</div>
+          <div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs"><b class="text-emerald-400 font-mono">I0300:</b> Budi Santoso (CFO C06): Sangat puas dengan KasirNusa dan buka 10 cabang baru di Jakarta.</div>
+        `;
       } else {
-        strategyDesc = `Jalur ini menghubungkan ${nodeObjects[0].label} menuju ${nodeObjects[nodeObjects.length - 1].label} melalui ${result.path.length - 1} tahapan hop. Manfaatkan kontak perantara untuk membangun kredibilitas dan menghindari resistensi cold outreach.`;
-        draftSender = `${nodeObjects[0].label}`;
-        draftReceiver = `${nodeObjects[nodeObjects.length - 1].label}`;
-        draftSubject = `Koneksi dan Kolaborasi Sistem KasirNusa`;
-        draftText = `Yth. ${nodeObjects[nodeObjects.length - 1].label},\n\nKami menghubungi Anda melalui referensi rekanan profesional ${nodeObjects.slice(1, -1).map(n => n.label).join(', ') || 'terpercaya'}. Kami ingin mendiskusikan peluang kolaborasi sistem kasir dan otomasi bisnis KasirNusa.`;
+        stratHead.innerText = `Jalur Koneksi Relasi: ${nodesData[0].label} ➔ ${nodesData[nodesData.length - 1].label}`;
+        stratBody.innerText = `Jalur relasi menghubungkan titik awal menuju target melalui ${res.path.length - 1} tahapan hop. Manfaatkan perantara di tengah jalur untuk membangun kredibilitas sebelum mengajukan proposal komersial.`;
+        precText.innerHTML = "Setiap diskon di atas 10% wajib disetujui VP Sales dan mengacu pada volume outlet atau komitmen tahunan.";
+        evidenceList.innerHTML = `
+          <div class="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs">Jalur terbentuk dari data CRM, relasi employment history, dan interaksi komunikasi terindeks.</div>
+        `;
       }
-
-      container.innerHTML = `
-        <div class="space-y-6 animate-fadeIn">
-          
-          <!-- Header Score & Hops -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
-            <div>
-              <span class="text-xs font-mono uppercase tracking-wider text-blue-400 font-semibold">JALUR TERVERIFIKASI (${result.path.length - 1} HOPS)</span>
-              <h3 class="text-xl font-bold text-white mt-0.5">${nodeObjects[0].label} ➔ ${nodeObjects[nodeObjects.length - 1].label}</h3>
-            </div>
-            <div class="flex items-center gap-3 bg-blue-500/10 border border-blue-500/30 px-4 py-2 rounded-2xl self-start">
-              <span class="text-xs text-blue-200">Kekuatan Relasi:</span>
-              <span class="text-2xl font-extrabold font-mono text-emerald-400">${score}</span>
-              <span class="text-xs text-slate-400">/ 10</span>
-            </div>
-          </div>
-
-          <!-- Step-by-Step Flow Bar -->
-          <div>
-            <div class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 font-semibold">Alur Entitas &amp; Tipe Relasi:</div>
-            ${hopsHtml}
-          </div>
-
-          <!-- Strategy Card -->
-          <div class="p-5 rounded-2xl bg-blue-900/20 border border-blue-700/40">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-blue-300 font-mono mb-2">${strategyTitle}</h4>
-            <p class="text-xs text-slate-300 leading-relaxed">${strategyDesc}</p>
-          </div>
-
-          <!-- Draft Email Box (Output Wajib) -->
-          <div class="p-6 rounded-2xl bg-black/50 border border-white/10 relative">
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-              <div class="text-xs font-mono text-slate-400">
-                <span class="text-blue-400 font-bold">DRAFT PESAN INTRO (SIAP SALIN):</span><br>
-                <span>${draftSender} ➔ ${draftReceiver}</span>
-              </div>
-              <button onclick="copyElementText('finder-draft-copy')" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md active:scale-95 flex items-center gap-1.5">
-                <span>📋 Salin Pesan</span>
-              </button>
-            </div>
-
-            <div class="text-xs font-mono text-slate-300 mb-2">
-              <strong>Subjek:</strong> ${draftSubject}
-            </div>
-
-            <div id="finder-draft-copy" class="text-xs text-slate-200 font-sans leading-relaxed whitespace-pre-line p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-${draftText}
-            </div>
-          </div>
-
-        </div>
-      `;
-
-      triggerSimulatedToast(`✓ Jalur ${nodeObjects[0].label} ➔ ${nodeObjects[nodeObjects.length - 1].label} ditemukan (${score}/10)!`);
     }
 
-    // ===== 2. LIVE CANVAS GRAPH RENDERER WITH NEURAL PHYSICS =====
-    const canvas = document.getElementById('graphCanvas');
+    function renderDraftMessage(sId, tId, res) {
+      const fromEl = document.getElementById('draft-from');
+      const toEl = document.getElementById('draft-to');
+      const subEl = document.getElementById('draft-subject');
+      const contentEl = document.getElementById('draft-content');
+      const ratEl = document.getElementById('draft-rationale');
+
+      if ((sId === 'E03' && tId === 'K017') || (sId === 'E03' && tId === 'K089')) {
+        fromEl.innerText = "Sari Puspita (sari@kasirnusa.id)";
+        toEl.innerText = "Rina Hapsari (rina.hapsari@mandalaritel.co.id)";
+        subEl.innerText = "Selamat atas posisi barunya di Grup Ritel Mandala, Bu Rina!";
+        contentEl.innerText = `Bu Rina yang baik,
+
+Selamat atas posisi barunya sebagai GM Operations di Grup Ritel Mandala! Senang sekali mendengar kabar baik ini.
+
+Saya dengar Mandala sedang mencari sistem kasir modern untuk 60 gerai minimarket. Kebetulan Pak Fajar dari tim IT Mandala sudah melihat demo teknis kami bersama Mas Bagus Prakoso dan responsnya sangat positif.
+
+Mengingat Ibu tentu sudah paham betul kapabilitas dan keandalan KasirNusa dari pengalaman operasional 42 outlet Kopi Lintas Nusantara selama 3 tahun terakhir, mungkin Ibu berkenan jika kami jadwalkan sesi presentasi eksekutif singkat bersama tim manajemen Mandala?
+
+Untuk kebutuhan 60 gerai, kami juga siap menyiapkan skema komersial khusus skala volume enterprise. Kalau Ibu ada waktu luang minggu depan, saya dan Mas Bagus siap berkunjung ke kantor Mandala.
+
+Salam hangat,
+Sari Puspita
+Account Manager · KasirNusa`;
+        ratEl.innerHTML = `
+          <li>Membuka jalur lewat hubungan hangat 3+ tahun (13 interaksi di C01).</li>
+          <li>Mengakui pencapaian posisi baru Rina sebagai GM Operations.</li>
+          <li>Menyambungkan hasil demo teknis Fajar yang sudah lolos evaluasi.</li>
+          <li>Mengajukan justifikasi volume diskon resmi sesuai Preseden D-2025-11.</li>
+        `;
+      } else if ((sId === 'E04' && tId === 'K028') || (sId === 'K116' && tId === 'K028')) {
+        fromEl.innerText = "Wahyu Nugroho (wahyu@kasirnusa.id)";
+        toEl.innerText = "Budi Santoso (budi.santoso@saiyo.co.id)";
+        subEl.innerText = "Permohonan Referensi Rekanan - Pak Hartono Gunawan (Nirwana Resto)";
+        contentEl.innerText = `Selamat siang Pak Budi,
+
+Semoga Pak Budi dan tim Saiyo Group senantiasa sehat dan lancar dalam persiapan ekspansi 10 cabang baru ke Jakarta.
+
+Pak Budi, saat ini tim kami sedang dalam tahap finalisasi pengadaan sistem POS untuk Nirwana Hotel & Resto (35 outlet) yang dipimpin oleh Pak Hartono Gunawan. Dari riwayat profesional, kami mengetahui bahwa Bapak dan Pak Hartono pernah berkolaborasi erat di PT Sentosa Abadi Group.
+
+Pak Hartono saat ini membutuhkan referensi pengalaman nyata dari rekan pelaku usaha hospitality/F&B yang sudah menggunakan sistem KasirNusa. Apakah Bapak berkenan bila nama Bapak kami cantumkan sebagai kontak referensi rekanan untuk Pak Hartono?
+
+Dukungan Bapak akan sangat berharga bagi kami. Terima kasih banyak atas kepercayaan Pak Budi selama ini pada KasirNusa.
+
+Salam hormat,
+Wahyu Nugroho
+Account Manager · KasirNusa`;
+        ratEl.innerHTML = `
+          <li>Menghubungi Budi Santoso (CFO C06) dengan mengangkat kabar ekspansi Jakarta.</li>
+          <li>Memanfaatkan relasi 5 tahun satu kantor di PT Sentosa Abadi Group (2015–2019).</li>
+          <li>Menyelesaikan hambatan deal P04 yang macet 30 hari karena butuh referensi rekanan.</li>
+        `;
+      } else {
+        fromEl.innerText = "Tim Sales KasirNusa";
+        toEl.innerText = "Target Decision Maker";
+        subEl.innerText = "Pengantar Solusi Sistem Kasir & Manajemen Outlet KasirNusa";
+        contentEl.innerText = `Yth. Bapak/Ibu,\n\nKami menghubungi Anda melalui perantara profesional terpercaya. Kami ingin mendiskusikan implementasi sistem POS multi-outlet KasirNusa yang andal dan terintegrasi.\n\nSalam hormat,\nTim KasirNusa`;
+        ratEl.innerHTML = `<li>Template pengantar standar via jaringan rekanan graph.</li>`;
+      }
+    }
+
+    // ===== 3. PURE JS INTERACTIVE CANVAS GRAPH ENGINE =====
+    const canvas = document.getElementById('graph-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
-    let canvasNodes = [];
-    let canvasEdges = [];
+    let nodes = [];
+    let edges = [];
     let draggedNode = null;
     let hoveredNode = null;
-    let mouseX = 0, mouseY = 0;
-    let activeFilter = 'all';
-    let highlightPathOnCanvas = ['E03', 'K017', 'K089'];
+    let zoomLevel = 1.0;
+    let panX = 0, panY = 0;
+    let isPanning = false;
+    let lastMouseX = 0, lastMouseY = 0;
 
-    function initCanvasData() {
+    function initGraphCanvas() {
+      resizeCanvas();
       if (!window.GRAPH_DATA) return;
 
-      const gNodes = window.GRAPH_DATA.nodes;
-      const gEdges = window.GRAPH_DATA.edges;
-
-      canvasNodes = gNodes.map(n => {
-        let color = '#3B82F6';
-        let radius = 18;
-        if (n.type === 'kasirnusa') { color = '#3B82F6'; radius = 20; }
-        else if (n.type === 'dm') { color = '#F43F5E'; radius = 24; }
-        else if (n.type === 'prospect') { color = '#F59E0B'; radius = 22; }
-        else if (n.type === 'customer') { color = '#10B981'; radius = 20; }
-        else if (n.type === 'org') { color = '#FB923C'; radius = 18; }
-        else if (n.type === 'contact') { color = '#06B6D4'; radius = 16; }
-        else if (n.type === 'decision') { color = '#A855F7'; radius = 17; }
-        else if (n.type === 'feature') { color = '#34D399'; radius = 16; }
+      nodes = window.GRAPH_DATA.nodes.map(n => {
+        let color = '#3b82f6';
+        let radius = 16;
+        if (n.type === 'kasirnusa') { color = '#3b82f6'; radius = 18; }
+        else if (n.type === 'dm') { color = '#f43f5e'; radius = 22; }
+        else if (n.type === 'prospect') { color = '#f59e0b'; radius = 20; }
+        else if (n.type === 'customer') { color = '#10b981'; radius = 18; }
+        else if (n.type === 'org') { color = '#fb923c'; radius = 16; }
+        else if (n.type === 'contact') { color = '#06b6d4'; radius = 15; }
+        else if (n.type === 'decision') { color = '#a855f7'; radius = 15; }
+        else if (n.type === 'feature') { color = '#14b8a6'; radius = 14; }
 
         return {
           id: n.id,
           label: n.label,
           type: n.type,
           role: n.role,
-          category: n.group || n.type,
-          desc: `${n.label} — ${n.role}. Terhubung dalam ekosistem Context Graph KasirNusa.`,
-          color: color,
-          radius: radius,
+          desc: `${n.label} — ${n.role}`,
+          color,
+          radius,
           x: 0,
           y: 0,
           vx: 0,
@@ -1375,7 +738,7 @@ ${draftText}
         };
       });
 
-      canvasEdges = gEdges.map(e => ({
+      edges = window.GRAPH_DATA.edges.map(e => ({
         source: e.from,
         target: e.to,
         label: e.label,
@@ -1383,23 +746,20 @@ ${draftText}
         type: e.type
       }));
 
-      positionInitialCanvasNodes();
-    }
-
-    function positionInitialCanvasNodes() {
-      if (!width || !height) return;
-      canvasNodes.forEach((n, idx) => {
-        const angle = (idx / canvasNodes.length) * Math.PI * 2;
-        const radius = (idx % 3 === 0) ? 140 : (idx % 3 === 1) ? 230 : 310;
-        n.x = width / 2 + Math.cos(angle) * radius;
-        n.y = height / 2 + Math.sin(angle) * radius;
-        n.vx = (Math.random() - 0.5) * 0.4;
-        n.vy = (Math.random() - 0.5) * 0.4;
+      // Set initial positions
+      nodes.forEach((n, idx) => {
+        const angle = (idx / nodes.length) * Math.PI * 2;
+        const rad = (idx % 3 === 0) ? 140 : (idx % 3 === 1) ? 230 : 320;
+        n.x = width / 2 + Math.cos(angle) * rad;
+        n.y = height / 2 + Math.sin(angle) * rad;
       });
+
+      document.getElementById('hud-nodes').innerText = nodes.length;
+      document.getElementById('hud-edges').innerText = edges.length;
     }
 
     function resizeCanvas() {
-      const rect = canvas.parentElement.getBoundingClientRect();
+      const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
       canvas.width = width * window.devicePixelRatio;
@@ -1407,14 +767,13 @@ ${draftText}
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    function updateCanvasPhysics() {
-      const kRepel = 1600;
+    function updatePhysics() {
+      const kRepel = 1500;
       const kSpring = 0.035;
       const centerDamp = 0.012;
 
-      const visible = getVisibleCanvasNodes();
+      const visible = getVisibleNodes();
 
-      // Repulsion
       for (let i = 0; i < visible.length; i++) {
         for (let j = i + 1; j < visible.length; j++) {
           const n1 = visible[i];
@@ -1434,15 +793,14 @@ ${draftText}
         }
       }
 
-      // Spring on edges
-      canvasEdges.forEach(e => {
+      edges.forEach(e => {
         const n1 = visible.find(n => n.id === e.source);
         const n2 = visible.find(n => n.id === e.target);
         if (n1 && n2) {
           const dx = n2.x - n1.x;
           const dy = n2.y - n1.y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const targetDist = 120;
+          const targetDist = 110;
           const force = (dist - targetDist) * kSpring;
           const fx = (dx / dist) * force;
           const fy = (dy / dist) * force;
@@ -1453,313 +811,284 @@ ${draftText}
         }
       });
 
-      // Position update & bounding
       visible.forEach(n => {
-        if (n === draggedNode) {
-          n.x = mouseX;
-          n.y = mouseY;
-          n.vx = 0;
-          n.vy = 0;
-          return;
-        }
+        if (n === draggedNode) return;
         n.vx += (width / 2 - n.x) * centerDamp;
         n.vy += (height / 2 - n.y) * centerDamp;
         n.vx *= 0.88;
         n.vy *= 0.88;
         n.x += n.vx;
         n.y += n.vy;
-
-        const pad = n.radius + 20;
-        if (n.x < pad) n.x = pad;
-        if (n.x > width - pad) n.x = width - pad;
-        if (n.y < pad) n.y = pad;
-        if (n.y > height - pad) n.y = height - pad;
       });
     }
 
-    function getVisibleCanvasNodes() {
+    function getVisibleNodes() {
       if (activeFilter === 'p01') {
-        const p01Set = new Set(['P01', 'K017', 'K089', 'K052', 'E03', 'E06', 'C01', 'DL-001', 'D-2025-11', 'FEAT-07']);
-        return canvasNodes.filter(n => p01Set.has(n.id));
+        const s = new Set(['P01', 'K017', 'K089', 'K052', 'E03', 'E06', 'C01', 'DL-001', 'D-2025-11', 'FEAT-07']);
+        return nodes.filter(n => s.has(n.id));
       }
       if (activeFilter === 'p04') {
-        const p04Set = new Set(['P04', 'K028', 'K065', 'E04', 'E06', 'K116', 'C06', 'ORG_SENTOSA', 'DL-004', 'D-2025-06']);
-        return canvasNodes.filter(n => p04Set.has(n.id));
+        const s = new Set(['P04', 'K028', 'K065', 'E04', 'E06', 'K116', 'C06', 'ORG_SENTOSA', 'DL-004', 'D-2025-06']);
+        return nodes.filter(n => s.has(n.id));
       }
-      if (activeFilter === 'dm') {
-        return canvasNodes.filter(n => n.type === 'dm' || n.type === 'prospect' || n.type === 'kasirnusa');
-      }
-      return canvasNodes;
+      return nodes;
     }
 
-    function renderCanvasGraph() {
+    function renderGraph() {
       ctx.clearRect(0, 0, width, height);
+      ctx.save();
+      ctx.translate(panX, panY);
+      ctx.scale(zoomLevel, zoomLevel);
 
-      const visible = getVisibleCanvasNodes();
+      const visible = getVisibleNodes();
       const visibleSet = new Set(visible.map(n => n.id));
 
-      // Edges
-      canvasEdges.forEach(e => {
+      // Draw Edges
+      edges.forEach(e => {
         if (!visibleSet.has(e.source) || !visibleSet.has(e.target)) return;
-        const n1 = canvasNodes.find(n => n.id === e.source);
-        const n2 = canvasNodes.find(n => n.id === e.target);
+        const n1 = nodes.find(n => n.id === e.source);
+        const n2 = nodes.find(n => n.id === e.target);
         if (!n1 || !n2) return;
 
-        const isPathEdge = highlightPathOnCanvas.includes(n1.id) && highlightPathOnCanvas.includes(n2.id) &&
-          Math.abs(highlightPathOnCanvas.indexOf(n1.id) - highlightPathOnCanvas.indexOf(n2.id)) === 1;
+        const isPath = highlightedPath.includes(n1.id) && highlightedPath.includes(n2.id) &&
+          Math.abs(highlightedPath.indexOf(n1.id) - highlightedPath.indexOf(n2.id)) === 1;
 
-        ctx.save();
         ctx.beginPath();
         ctx.moveTo(n1.x, n1.y);
         ctx.lineTo(n2.x, n2.y);
-        ctx.strokeStyle = isPathEdge ? '#38BDF8' : 'rgba(255, 255, 255, 0.18)';
-        ctx.lineWidth = isPathEdge ? 3.5 : 1.5;
+        ctx.strokeStyle = isPath ? '#38bdf8' : 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = isPath ? 3.5 : 1.2;
         ctx.stroke();
 
-        // Pulsing particle on edge
-        if (isPathEdge) {
-          const t = (Date.now() / 1400) % 1;
+        // Path pulse particle
+        if (isPath) {
+          const t = (Date.now() / 1500) % 1;
           const px = n1.x + (n2.x - n1.x) * t;
           const py = n1.y + (n2.y - n1.y) * t;
           ctx.beginPath();
-          ctx.arc(px, py, 3.5, 0, Math.PI * 2);
-          ctx.fillStyle = '#38BDF8';
-          ctx.shadowColor = '#38BDF8';
-          ctx.shadowBlur = 8;
+          ctx.arc(px, py, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#38bdf8';
           ctx.fill();
         }
-        ctx.restore();
       });
 
-      // Nodes
+      // Draw Nodes
       visible.forEach(n => {
         const isHovered = (n === hoveredNode || n === draggedNode);
-        const isHighlighted = highlightPathOnCanvas.includes(n.id);
+        const isPath = highlightedPath.includes(n.id);
 
-        ctx.save();
-        // Halo Glow
+        // Glow
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.radius + (isHovered ? 10 : isHighlighted ? 8 : 4), 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
-        ctx.globalAlpha = isHovered ? 0.45 : isHighlighted ? 0.35 : 0.12;
+        ctx.arc(n.x, n.y, n.radius + (isHovered ? 8 : isPath ? 6 : 2), 0, Math.PI * 2);
+        ctx.fillStyle = isPath ? '#38bdf8' : n.color;
+        ctx.globalAlpha = isHovered ? 0.45 : isPath ? 0.35 : 0.12;
         ctx.fill();
 
-        // Node Body
+        // Body
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-        ctx.fillStyle = '#0F172A';
-        ctx.strokeStyle = isHighlighted ? '#38BDF8' : n.color;
-        ctx.lineWidth = isHighlighted ? 3 : 2;
+        ctx.fillStyle = '#18181b';
+        ctx.strokeStyle = isPath ? '#38bdf8' : n.color;
+        ctx.lineWidth = isPath ? 2.8 : 2;
         ctx.globalAlpha = 1;
         ctx.fill();
         ctx.stroke();
 
-        // Inner Dot
+        // Center dot
         ctx.beginPath();
-        ctx.arc(n.x, n.y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
+        ctx.arc(n.x, n.y, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = isPath ? '#38bdf8' : n.color;
         ctx.fill();
 
         // Label
-        ctx.font = `${isHovered || isHighlighted ? 'bold 11px' : '10px'} "Plus Jakarta Sans", sans-serif`;
-        ctx.fillStyle = '#FFFFFF';
+        ctx.font = `${isHovered || isPath ? 'bold 11px' : '10px'} "Inter", sans-serif`;
+        ctx.fillStyle = isPath ? '#38bdf8' : '#e4e4e7';
         ctx.textAlign = 'center';
-        ctx.fillText(n.label, n.x, n.y + n.radius + 14);
-
-        ctx.restore();
+        ctx.fillText(n.label, n.x, n.y + n.radius + 13);
       });
+
+      ctx.restore();
     }
 
-    function canvasLoop() {
-      updateCanvasPhysics();
-      renderCanvasGraph();
-      requestAnimationFrame(canvasLoop);
+    function loop() {
+      updatePhysics();
+      renderGraph();
+      requestAnimationFrame(loop);
     }
 
-    function findCanvasNodeAt(x, y) {
-      const visible = getVisibleCanvasNodes();
+    // Canvas Events
+    function screenToWorld(sx, sy) {
+      return {
+        x: (sx - panX) / zoomLevel,
+        y: (sy - panY) / zoomLevel
+      };
+    }
+
+    function findNodeAt(sx, sy) {
+      const w = screenToWorld(sx, sy);
+      const visible = getVisibleNodes();
       for (let i = visible.length - 1; i >= 0; i--) {
         const n = visible[i];
-        const dx = n.x - x;
-        const dy = n.y - y;
-        if (Math.sqrt(dx * dx + dy * dy) <= n.radius + 10) {
+        const dx = n.x - w.x;
+        const dy = n.y - w.y;
+        if (Math.sqrt(dx * dx + dy * dy) <= n.radius + 8) {
           return n;
         }
       }
       return null;
     }
 
-    function inspectCanvasNode(n) {
-      document.getElementById('inspect-title').innerText = n.label;
-      document.getElementById('inspect-desc').innerText = n.desc;
-      document.getElementById('inspect-category').innerText = (n.category || n.type).toUpperCase();
-      document.getElementById('inspect-id').innerText = n.id;
-      document.getElementById('inspect-role').innerText = `Role: ${n.role || n.type}`;
-      document.getElementById('hud-active-account').innerText = n.label;
-    }
-
-    function focusInspectNodeInPath() {
-      const id = document.getElementById('inspect-id')?.innerText;
-      if (!id) return;
-      const isTarget = targetsList.some(t => t.id === id);
-      if (isTarget) {
-        document.getElementById('finder-target').value = id;
-      } else {
-        document.getElementById('finder-source').value = id;
-      }
-      calculateAndRenderPath();
-      document.getElementById('path-finder').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function setGraphFilter(filter) {
-      activeFilter = filter;
-      ['all', 'p01', 'p04', 'dm'].forEach(f => {
-        const btn = document.getElementById('filter-' + f);
-        if (!btn) return;
-        if (f === filter) {
-          btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-blue-700 shadow-md";
-        } else {
-          btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 text-white transition-all";
-        }
-      });
-      document.getElementById('hud-node-count').innerText = getVisibleCanvasNodes().length;
-      triggerSimulatedToast(`Filter diubah: Tampilan ${filter.toUpperCase()}`);
-    }
-
-    function resetGraphPhysics() {
-      positionInitialCanvasNodes();
-      triggerSimulatedToast("↺ Posisi canvas graph di-pusatkan kembali!");
-    }
-
-    // Pointer events on canvas
-    function getCanvasPointer(evt) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
-      const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
-      return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
-      };
-    }
-
     canvas.addEventListener('mousedown', (e) => {
-      const pos = getCanvasPointer(e);
-      mouseX = pos.x;
-      mouseY = pos.y;
-      draggedNode = findCanvasNodeAt(pos.x, pos.y);
-      if (draggedNode) inspectCanvasNode(draggedNode);
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+
+      lastMouseX = sx;
+      lastMouseY = sy;
+
+      const hit = findNodeAt(sx, sy);
+      if (hit) {
+        draggedNode = hit;
+        inspectNode(hit);
+      } else {
+        isPanning = true;
+      }
     });
 
     window.addEventListener('mousemove', (e) => {
-      const pos = getCanvasPointer(e);
-      mouseX = pos.x;
-      mouseY = pos.y;
-      hoveredNode = findCanvasNodeAt(pos.x, pos.y);
-      canvas.style.cursor = hoveredNode ? 'grab' : 'default';
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+
+      if (draggedNode) {
+        const w = screenToWorld(sx, sy);
+        draggedNode.x = w.x;
+        draggedNode.y = w.y;
+      } else if (isPanning) {
+        panX += (sx - lastMouseX);
+        panY += (sy - lastMouseY);
+        lastMouseX = sx;
+        lastMouseY = sy;
+      } else {
+        hoveredNode = findNodeAt(sx, sy);
+        canvas.style.cursor = hoveredNode ? 'grab' : 'default';
+      }
     });
 
-    window.addEventListener('mouseup', () => { draggedNode = null; });
+    window.addEventListener('mouseup', () => {
+      draggedNode = null;
+      isPanning = false;
+    });
 
-    // Touch support
-    canvas.addEventListener('touchstart', (e) => {
-      const pos = getCanvasPointer(e);
-      mouseX = pos.x;
-      mouseY = pos.y;
-      draggedNode = findCanvasNodeAt(pos.x, pos.y);
-      if (draggedNode) inspectCanvasNode(draggedNode);
-    }, { passive: true });
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      zoomLevel = Math.max(0.4, Math.min(2.5, zoomLevel * zoomFactor));
+    }, { passive: false });
 
-    window.addEventListener('touchmove', (e) => {
-      if (!draggedNode) return;
-      const pos = getCanvasPointer(e);
-      mouseX = pos.x;
-      mouseY = pos.y;
-    }, { passive: true });
+    function inspectNode(n) {
+      selectedNode = n;
+      document.getElementById('inspect-name').innerText = n.label;
+      document.getElementById('inspect-id').innerText = n.id;
+      document.getElementById('inspect-role').innerText = n.role || n.type;
+      document.getElementById('inspect-desc').innerText = n.desc;
+      document.getElementById('inspect-tag').innerText = n.type.toUpperCase();
 
-    window.addEventListener('touchend', () => { draggedNode = null; });
+      // Find connections
+      const conns = edges.filter(e => e.source === n.id || e.target === n.id);
+      const connContainer = document.getElementById('inspect-connections');
+      connContainer.innerHTML = conns.map(c => {
+        const otherId = c.source === n.id ? c.target : c.source;
+        const other = nodes.find(x => x.id === otherId);
+        return `<div class="p-1.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
+          <span class="text-blue-400 font-bold">${other ? other.label : otherId}</span> — ${c.label}
+        </div>`;
+      }).join('') || '<div class="text-zinc-500">Tidak ada koneksi langsung.</div>';
 
-    // ===== 3. LIVE QUERY ENGINE =====
-    function runQueryEngine(queryKey) {
+      switchTab('node');
+    }
+
+    function setNodeAsSource() {
+      if (!selectedNode) return;
+      document.getElementById('sel-source').value = selectedNode.id;
+      runBfsPathFinder();
+      switchTab('path');
+    }
+
+    function resetCanvasPosition() {
+      zoomLevel = 1.0;
+      panX = 0;
+      panY = 0;
+      showToast("Tampilan canvas di-reset", true);
+    }
+
+    function setFilter(f) {
+      activeFilter = f;
+      ['all', 'p01', 'p04'].forEach(id => {
+        const btn = document.getElementById('btn-f-' + id);
+        if (id === f) {
+          btn.className = "h-7 px-2.5 rounded-md text-[11px] font-semibold bg-zinc-800 text-blue-400 border border-blue-500/40";
+        } else {
+          btn.className = "h-7 px-2.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-400 hover:bg-zinc-800 border-0";
+        }
+      });
+      document.getElementById('hud-nodes').innerText = getVisibleNodes().length;
+      showToast(`Filter: ${f.toUpperCase()}`, true);
+    }
+
+    // ===== 4. TAB NAVIGATION & QUERY TRIGGER =====
+    function switchTab(t) {
+      ['path', 'draft', 'query', 'node'].forEach(id => {
+        const pane = document.getElementById('pane-' + id);
+        const btn = document.getElementById('tab-btn-' + id);
+        if (id === t) {
+          pane.classList.remove('hidden');
+          btn.className = "px-3 py-1.5 rounded-t text-xs font-semibold border-b-2 border-blue-500 text-blue-400 bg-zinc-900";
+        } else {
+          pane.classList.add('hidden');
+          btn.className = "px-3 py-1.5 rounded-t text-xs font-semibold border-b-2 border-transparent text-zinc-400 hover:text-zinc-200";
+        }
+      });
+    }
+
+    function triggerQuery(qKey) {
       if (!window.GRAPH_DATA || !window.GRAPH_DATA.queryAnswers) return;
-      const data = window.GRAPH_DATA.queryAnswers[queryKey];
-      if (!data) return;
+      const ans = window.GRAPH_DATA.queryAnswers[qKey];
+      if (!ans) return;
 
-      const box = document.getElementById('query-result-box');
-      box.innerHTML = `
-        <div class="space-y-4 animate-fadeIn">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900">${data.title}</h3>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-100 text-blue-800">Verified Answer</span>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-900 text-white font-mono text-xs flex items-center gap-2 overflow-x-auto">
-            <span class="text-blue-400 font-bold">ALUR:</span>
-            <span>${data.path}</span>
-          </div>
-          <div class="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans">
-            ${data.explanation}
-          </div>
-        </div>
-      `;
+      document.getElementById('query-answer-title').innerText = ans.title;
+      document.getElementById('query-answer-path').innerText = ans.path;
+      document.getElementById('query-answer-body').innerHTML = ans.explanation;
 
-      // Highlight active query button
-      document.querySelectorAll('[id^="qbtn-"]').forEach(btn => {
-        btn.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
-      });
-      const activeBtn = document.getElementById('qbtn-' + queryKey);
-      if (activeBtn) {
-        activeBtn.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
-      }
+      if (qKey === 'path_p01') setPreset('E03', 'K017');
+      if (qKey === 'path_p04') setPreset('E04', 'K028');
+      if (qKey === 'who_knows_who') setPreset('K116', 'K028');
 
-      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      triggerSimulatedToast(`✓ Pertanyaan dijawab dari Context Graph!`);
+      showToast(`Jawaban query dimuat: ${ans.title.substring(0, 30)}...`, true);
     }
 
-    function executeCustomQuery() {
-      const input = document.getElementById('custom-query-input');
-      const val = input.value.trim().toLowerCase();
-      if (!val) return;
-
-      if (val.includes('sentosa') || val.includes('kolega') || val.includes('kenal')) {
-        runQueryEngine('who_knows_who');
-      } else if (val.includes('bonus') || val.includes('lintas track') || val.includes('churn')) {
-        runQueryEngine('cross_track');
-      } else if (val.includes('diskon') || val.includes('preseden') || val.includes('d-2025')) {
-        runQueryEngine('precedent');
-      } else if (val.includes('feat') || val.includes('akuntansi') || val.includes('risiko')) {
-        runQueryEngine('risk_p01');
-      } else if (val.includes('p04') || val.includes('nirwana') || val.includes('hartono') || val.includes('budi')) {
-        runQueryEngine('path_p04');
-      } else if (val.includes('p01') || val.includes('mandala') || val.includes('rina') || val.includes('sari')) {
-        runQueryEngine('path_p01');
-      } else if (val.includes('ekspansi') || val.includes('jakarta') || val.includes('saiyo')) {
-        runQueryEngine('tim5_expansion');
-      } else if (val.includes('akselerasi') || val.includes('prioritas') || val.includes('tim 4')) {
-        runQueryEngine('tim4_accel');
-      } else if (val.includes('tim 2') || val.includes('decision maker')) {
-        runQueryEngine('tim2_dm');
-      } else {
-        // Fallback search across query answers
-        runQueryEngine('path_p01');
-      }
-    }
-
-    // ===== 4. GENERAL UTILITIES (CLIPBOARD, MODALS, TOAST) =====
-    function copyElementText(elId) {
-      const el = document.getElementById(elId);
-      if (!el) return;
-      const text = el.innerText || el.textContent;
+    function copyDraftMessage() {
+      const text = document.getElementById('draft-content').innerText;
       navigator.clipboard.writeText(text).then(() => {
-        triggerSimulatedToast("✓ Draft pesan berhasil disalin ke clipboard!");
+        showToast("✓ Pesan intro disalin ke clipboard!", true);
       }).catch(() => {
-        // Fallback execCommand
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        triggerSimulatedToast("✓ Draft pesan berhasil disalin!");
+        showToast("Gagal menyalin pesan", false);
       });
+    }
+
+    // Toast & Modal
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-msg');
+      const ind = document.getElementById('toast-indicator');
+      text.innerText = msg;
+      ind.className = isSuccess ? "w-2 h-2 rounded-full bg-emerald-400" : "w-2 h-2 rounded-full bg-rose-400";
+      toast.classList.remove('-translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-20', 'opacity-0');
+      }, 3000);
     }
 
     function openModal(id) {
@@ -1772,31 +1101,15 @@ ${draftText}
       if (m) m.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    function triggerSimulatedToast(msg) {
-      const toast = document.getElementById('toast');
-      const text = document.getElementById('toast-text');
-      if (!toast || !text) return;
-      text.innerText = msg;
-      toast.classList.remove('-translate-y-24', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('-translate-y-24', 'opacity-0');
-      }, 3500);
-    }
-
-    // ===== 5. WINDOW INITIALIZATION =====
+    // Window Init
     window.onload = function() {
-      initPathFinderSelects();
-      calculateAndRenderPath();
-      resizeCanvas();
-      initCanvasData();
-      canvasLoop();
+      initDropdowns();
+      initGraphCanvas();
+      runBfsPathFinder();
+      loop();
 
       window.addEventListener('resize', () => {
         resizeCanvas();
-        positionInitialCanvasNodes();
       });
     };
   </script>

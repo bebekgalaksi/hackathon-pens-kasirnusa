@@ -1,6 +1,10 @@
 .git
 .github
-*.csv
-*.jsonl
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints
+preprocessing_data/
+docs/
 *.pdf
-product_usage_daily.csv

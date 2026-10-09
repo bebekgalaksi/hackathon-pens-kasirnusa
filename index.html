@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relationship Path Finder — Tim 3 | KasirNusa Context Graph</title>
+    <meta name="description" content="Relationship Path Finder: Menemukan jalur terbaik menuju decision maker untuk prospek P01 dan P04 KasirNusa">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="18" stroke="url(#grad1)" stroke-width="2"/>
+                        <circle cx="12" cy="15" r="3" fill="#6C63FF"/>
+                        <circle cx="28" cy="15" r="3" fill="#00D9FF"/>
+                        <circle cx="20" cy="28" r="3" fill="#FF6B9D"/>
+                        <line x1="12" y1="15" x2="28" y2="15" stroke="#6C63FF" stroke-width="1.5" opacity="0.5"/>
+                        <line x1="12" y1="15" x2="20" y2="28" stroke="#FF6B9D" stroke-width="1.5" opacity="0.5"/>
+                        <line x1="28" y1="15" x2="20" y2="28" stroke="#00D9FF" stroke-width="1.5" opacity="0.5"/>
+                        <defs><linearGradient id="grad1" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#6C63FF"/><stop offset="1" stop-color="#00D9FF"/></linearGradient></defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Relationship Path Finder</h1>
+                    <p class="subtitle">Tim 3 · KasirNusa Context Graph</p>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <button class="nav-btn active" data-tab="overview" id="nav-overview">Overview</button>
+                <button class="nav-btn" data-tab="p01" id="nav-p01">P01 · Mandala</button>
+                <button class="nav-btn" data-tab="p04" id="nav-p04">P04 · Nirwana</button>
+                <button class="nav-btn" data-tab="graph" id="nav-graph">Full Graph</button>
+                <button class="nav-btn" data-tab="query" id="nav-query">Live Query</button>
+                <a href="context_graph_for_cs_sales_agently_style.html" class="nav-btn" style="background: linear-gradient(135deg, #2563EB, #1D4ED8); color: white; border: none; font-weight: 700; text-decoration: none; padding: 6px 14px; border-radius: 99px;">✨ Agently UI</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Overview Tab -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="hero-section">
+                <div class="hero-text">
+                    <span class="hero-badge">Track Sales · Tim 3</span>
+                    <h2>Lewat siapa jalur terbaik menuju <span class="gradient-text">decision maker</span>?</h2>
+                    <p>Menghubungkan 6 sumber data untuk menemukan jalur koneksi terpendek dan terkuat menuju pengambil keputusan di prospek P01 (Grup Ritel Mandala) dan P04 (Nirwana Hotel & Resto).</p>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-card" id="stat-sources">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Sumber Data</div>
+                    </div>
+                    <div class="stat-card" id="stat-nodes">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Node Graph</div>
+                    </div>
+                    <div class="stat-card" id="stat-edges">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Relasi</div>
+                    </div>
+                    <div class="stat-card" id="stat-paths">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Jalur Ditemukan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Findings -->
+            <div class="findings-grid">
+                <div class="finding-card finding-p01" id="finding-p01">
+                    <div class="finding-header">
+                        <div class="finding-icon p01-icon">P01</div>
+                        <div>
+                            <h3>Grup Ritel Mandala</h3>
+                            <span class="finding-tag">60 outlet · Rp 252 juta/tahun</span>
+                        </div>
+                    </div>
+                    <div class="finding-body">
+                        <div class="finding-insight">
+                            <span class="insight-label">Decision Maker</span>
+                            <span class="insight-value">Rina Hapsari (GM Operations)</span>
+                        </div>
+                        <div class="finding-insight">
+                            <span class="insight-label">Jalur Terbaik</span>
+                            <span class="insight-value path-highlight">Sari (AM) → Rina Hapsari → Steven Wijaya (Dirut)</span>
+                        </div>
+                        <div class="finding-insight">
+                            <span class="insight-label">Kekuatan</span>
+                            <div class="strength-bar">
+                                <div class="strength-fill" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="finding-cta" onclick="switchTab('p01')">Lihat Detail & Draft Pesan →</button>
+                </div>
+
+                <div class="finding-card finding-p04" id="finding-p04">
+                    <div class="finding-header">
+                        <div class="finding-icon p04-icon">P04</div>
+                        <div>
+                            <h3>Nirwana Hotel & Resto</h3>
+                            <span class="finding-tag">35 outlet · Rp 147 juta/tahun</span>
+                        </div>
+                    </div>
+                    <div class="finding-body">
+                        <div class="finding-insight">
+                            <span class="insight-label">Decision Maker</span>
+                            <span class="insight-value">Hartono Gunawan (Direktur Utama)</span>
+                        </div>
+                        <div class="finding-insight">
+                            <span class="insight-label">Jalur Terbaik</span>
+                            <span class="insight-value path-highlight">Wahyu (AM) → Budi Santoso (C06) → Hartono (P04)</span>
+                        </div>
+                        <div class="finding-insight">
+                            <span class="insight-label">Kekuatan</span>
+                            <div class="strength-bar">
+                                <div class="strength-fill" style="width: 78%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="finding-cta" onclick="switchTab('p04')">Lihat Detail & Draft Pesan →</button>
+                </div>
+            </div>
+
+            <!-- Data Sources Connected -->
+            <div class="sources-section">
+                <h3 class="section-title">Sumber Data Terhubung</h3>
+                <div class="sources-grid">
+                    <div class="source-card" id="source-crm">
+                        <div class="source-icon">🏢</div>
+                        <div class="source-name">CRM</div>
+                        <div class="source-detail">45 akun, 160 kontak, 23 deal</div>
+                    </div>
+                    <div class="source-card" id="source-interactions">
+                        <div class="source-icon">📧</div>
+                        <div class="source-name">Email & Meeting</div>
+                        <div class="source-detail">350 interaksi</div>
+                    </div>
+                    <div class="source-card" id="source-employment">
+                        <div class="source-icon">👥</div>
+                        <div class="source-name">Riwayat Kerja</div>
+                        <div class="source-detail">218 riwayat jabatan</div>
+                    </div>
+                    <div class="source-card" id="source-contracts">
+                        <div class="source-icon">📋</div>
+                        <div class="source-name">Kontrak & Billing</div>
+                        <div class="source-detail">40 kontrak</div>
+                    </div>
+                    <div class="source-card" id="source-decisions">
+                        <div class="source-icon">⚖️</div>
+                        <div class="source-name">Log Keputusan</div>
+                        <div class="source-detail">31 entri</div>
+                    </div>
+                    <div class="source-card" id="source-support">
+                        <div class="source-icon">🎫</div>
+                        <div class="source-name">Support Tickets</div>
+                        <div class="source-detail">640 tiket</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- P01 Detail Tab -->
+        <section id="tab-p01" class="tab-content">
+            <div class="detail-header">
+                <div class="detail-badge p01-badge">P01</div>
+                <div>
+                    <h2>Grup Ritel Mandala</h2>
+                    <p>Minimarket · 60 outlet · Surabaya · Stage: Proposal (20 hari)</p>
+                </div>
+                <div class="detail-value">
+                    <span class="value-amount">Rp 252 juta</span>
+                    <span class="value-label">per tahun</span>
+                </div>
+            </div>
+
+            <!-- Graph Visualization for P01 -->
+            <div class="graph-container" id="p01-graph-container">
+                <div class="graph-header">
+                    <h3>Peta Relasi Menuju Decision Maker</h3>
+                    <div class="graph-legend">
+                        <span class="legend-item"><span class="legend-dot" style="background: #6C63FF"></span>KasirNusa</span>
+                        <span class="legend-item"><span class="legend-dot" style="background: #00D9FF"></span>Kontak</span>
+                        <span class="legend-item"><span class="legend-dot" style="background: #FF6B9D"></span>Decision Maker</span>
+                        <span class="legend-item"><span class="legend-dot" style="background: #FFD93D"></span>Akun</span>
+                    </div>
+                </div>
+                <canvas id="p01-graph" width="900" height="500"></canvas>
+            </div>
+
+            <!-- Path Analysis -->
+            <div class="path-analysis">
+                <h3 class="section-title">Jalur Koneksi yang Ditemukan</h3>
+                
+                <div class="path-card path-primary" id="p01-path-1">
+                    <div class="path-rank">🥇 Jalur Terbaik</div>
+                    <div class="path-score">
+                        <span class="score-value">9.2</span>
+                        <span class="score-label">/10</span>
+                    </div>
+                    <div class="path-visual">
+                        <div class="path-node node-kasirnusa">
+                            <span class="node-name">Sari Puspita</span>
+                            <span class="node-role">Account Manager (E03)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">AM C01 selama 3+ tahun<br>13 interaksi langsung</span>
+                        </div>
+                        <div class="path-node node-contact">
+                            <span class="node-name">Rina Hapsari</span>
+                            <span class="node-role">GM Operations P01 (ex-C01)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">Atasan baru di Mandala<br>Keputusan ada di tangan beliau</span>
+                        </div>
+                        <div class="path-node node-dm">
+                            <span class="node-name">Steven Wijaya</span>
+                            <span class="node-role">Direktur Utama P01 (K089)</span>
+                        </div>
+                    </div>
+                    <div class="path-evidence">
+                        <h4>Bukti dari Graph</h4>
+                        <div class="evidence-list">
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0107</span>
+                                <span class="evidence-text">QBR meeting Sari (E03) dengan Rina (K017) di C01 — Jan 2026. Klien puas.</span>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0290</span>
+                                <span class="evidence-text">Email pamit Rina dari C01 — 14 Agu 2026. Hubungan baik: "Terima kasih kerja samanya".</span>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-id">Employment</span>
+                                <span class="evidence-text">K017 pindah dari C01 (Head of Operations, 2021–Agu 2026) → P01 (GM Operations, Sep 2026).</span>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0343</span>
+                                <span class="evidence-text">Fajar (K052): "Keputusan pengadaan sistem kasir ada di [GM Operations], saya hanya menilai sisi teknis." — GM Operations = Rina.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="path-why">
+                        <h4>Mengapa Jalur Ini Terbaik?</h4>
+                        <ul>
+                            <li><strong>Hubungan personal kuat</strong>: Sari mengelola akun Rina selama 3+ tahun di C01 dengan 13 interaksi.</li>
+                            <li><strong>Rina adalah decision maker sebenarnya</strong>: Fajar (IT Manager) menegaskan keputusan ada di GM Operations baru (I0343).</li>
+                            <li><strong>Rina kenal baik produk KasirNusa</strong>: Sudah memakai di 42 outlet selama bertahun-tahun, bahkan meminta integrasi akuntansi.</li>
+                            <li><strong>Sentimen positif</strong>: Rina memuji dukungan KasirNusa (I0159), hubungan berakhir baik (I0290).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="path-card path-secondary" id="p01-path-2">
+                    <div class="path-rank">🥈 Jalur Alternatif</div>
+                    <div class="path-score">
+                        <span class="score-value">6.5</span>
+                        <span class="score-label">/10</span>
+                    </div>
+                    <div class="path-visual">
+                        <div class="path-node node-kasirnusa">
+                            <span class="node-name">Bagus Prakoso</span>
+                            <span class="node-role">Sales Executive (E06)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">Kontak teknis<br>4 interaksi</span>
+                        </div>
+                        <div class="path-node node-contact">
+                            <span class="node-name">Fajar Nugraha</span>
+                            <span class="node-role">IT Manager P01 (K052)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">Rekan kerja di Mandala</span>
+                        </div>
+                        <div class="path-node node-dm">
+                            <span class="node-name">Steven Wijaya</span>
+                            <span class="node-role">Direktur Utama P01 (K089)</span>
+                        </div>
+                    </div>
+                    <div class="path-evidence">
+                        <h4>Bukti dari Graph</h4>
+                        <div class="evidence-list">
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0279</span>
+                                <span class="evidence-text">Discovery meeting Bagus dengan Fajar — "60 gerai, sistem lama sering error. Fajar mengurus teknis."</span>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0343</span>
+                                <span class="evidence-text">Fajar: "saya hanya menilai sisi teknis" → Butuh jalur lain ke decision maker.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="path-why">
+                        <h4>Kelemahan</h4>
+                        <ul>
+                            <li>Fajar secara eksplisit menyatakan ia bukan decision maker.</li>
+                            <li>Bagus belum punya hubungan langsung dengan Rina atau Steven.</li>
+                            <li>Jalur ini sudah stuck di stage Proposal selama 20 hari tanpa respons dari decision maker.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Message -->
+            <div class="draft-section" id="p01-draft">
+                <h3 class="section-title">Draft Pesan Intro</h3>
+                <div class="draft-card">
+                    <div class="draft-header">
+                        <span class="draft-label">Dari: Sari Puspita (sari@kasirnusa.id)</span>
+                        <span class="draft-label">Kepada: Rina Hapsari (rina.hapsari@mandalaritel.co.id)</span>
+                        <span class="draft-label">Subjek: Selamat atas posisi baru, Bu Rina!</span>
+                    </div>
+                    <div class="draft-body" id="p01-draft-body">
+                        <p>Bu Rina yang baik,</p>
+                        <p>Selamat atas posisi barunya sebagai GM Operations di Grup Ritel Mandala! Senang sekali mendengar kabar Ibu.</p>
+                        <p>Saya dengar Mandala sedang mencari sistem kasir untuk 60 gerai. Kebetulan Pak Fajar dari tim IT sudah melihat demo dan responsnya positif. Mungkin Ibu berkenan kami presentasikan langsung? Ibu tentu sudah paham betul kapabilitas KasirNusa dari pengalaman 42 outlet di Kopi Lintas.</p>
+                        <p>Kalau Ibu ada waktu minggu depan, saya bisa ke kantor Mandala bersama Mas Bagus yang sudah menangani prosesnya.</p>
+                        <p>Salam hangat,<br>Sari Puspita<br>Account Manager · KasirNusa</p>
+                    </div>
+                    <div class="draft-actions">
+                        <button class="copy-btn" onclick="copyDraft('p01-draft-body')">📋 Salin Draft Pesan</button>
+                    </div>
+                    <div class="draft-rationale">
+                        <h4>Alasan pendekatan ini:</h4>
+                        <ul>
+                            <li>Memanfaatkan hubungan personal Sari-Rina yang sudah terbangun 3+ tahun</li>
+                            <li>Mengakui pencapaian Rina (sentuhan personal)</li>
+                            <li>Merujuk validasi teknis dari Fajar (sudah demo, respons positif)</li>
+                            <li>Rina sudah menjadi "internal champion" karena pengalaman pribadinya dengan produk</li>
+                            <li><strong>Preseden D-2025-11</strong>: Diskon 15% pernah diberikan untuk volume 42 outlet. Untuk 60 outlet, bisa mengusulkan diskon serupa atau lebih tinggi dengan justifikasi volume</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Items -->
+            <div class="action-section" id="p01-actions">
+                <h3 class="section-title">Rekomendasi Tindakan</h3>
+                <div class="action-list">
+                    <div class="action-item priority-high">
+                        <span class="action-priority">SEGERA</span>
+                        <div class="action-content">
+                            <h4>Sari menghubungi Rina Hapsari</h4>
+                            <p>Kirim email personal, bukan dari Bagus. Rina mengenal Sari, bukan Bagus. Peluang respons jauh lebih tinggi.</p>
+                        </div>
+                    </div>
+                    <div class="action-item priority-high">
+                        <span class="action-priority">SEGERA</span>
+                        <div class="action-content">
+                            <h4>Koordinasi Sari + Bagus untuk meeting gabungan</h4>
+                            <p>Sari membuka pintu relasi, Bagus membawa konteks teknis dan proposal yang sudah ada.</p>
+                        </div>
+                    </div>
+                    <div class="action-item priority-medium">
+                        <span class="action-priority">MINGGU INI</span>
+                        <div class="action-content">
+                            <h4>Siapkan proposal diskon volume 60 outlet</h4>
+                            <p>Berdasarkan preseden D-2025-11 (15% untuk 42 outlet), usulkan 15-18% untuk 60 outlet. Minta approval VP Sales.</p>
+                        </div>
+                    </div>
+                    <div class="action-item priority-low">
+                        <span class="action-priority">PERHATIAN</span>
+                        <div class="action-content">
+                            <h4>Risiko: janji integrasi akuntansi belum ditepati</h4>
+                            <p>Rina pernah meminta FEAT-07 di C01 dan dijanjikan Q3 2026 (D-2025-11). Fitur ini belum rilis (I0258). Rina mungkin kecewa. Siapkan jawaban transparan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- P04 Detail Tab -->
+        <section id="tab-p04" class="tab-content">
+            <div class="detail-header">
+                <div class="detail-badge p04-badge">P04</div>
+                <div>
+                    <h2>Nirwana Hotel & Resto</h2>
+                    <p>Hospitality · 35 outlet · Surabaya · Stage: Negosiasi (30 hari)</p>
+                </div>
+                <div class="detail-value">
+                    <span class="value-amount">Rp 147 juta</span>
+                    <span class="value-label">per tahun</span>
+                </div>
+            </div>
+
+            <!-- Graph Visualization for P04 -->
+            <div class="graph-container" id="p04-graph-container">
+                <div class="graph-header">
+                    <h3>Peta Relasi Menuju Decision Maker</h3>
+                    <div class="graph-legend">
+                        <span class="legend-item"><span class="legend-dot" style="background: #6C63FF"></span>KasirNusa</span>
+                        <span class="legend-item"><span class="legend-dot" style="background: #00D9FF"></span>Kontak</span>
+                        <span class="legend-item"><span class="legend-dot" style="background: #FF6B9D"></span>Decision Maker</span>
+                        <span class="legend-item"><span class="legend-dot" style="background: #FFD93D"></span>Akun/Organisasi</span>
+                    </div>
+                </div>
+                <canvas id="p04-graph" width="900" height="500"></canvas>
+            </div>
+
+            <!-- Path Analysis P04 -->
+            <div class="path-analysis">
+                <h3 class="section-title">Jalur Koneksi yang Ditemukan</h3>
+
+                <div class="path-card path-primary" id="p04-path-1">
+                    <div class="path-rank">🥇 Jalur Terbaik</div>
+                    <div class="path-score">
+                        <span class="score-value">8.5</span>
+                        <span class="score-label">/10</span>
+                    </div>
+                    <div class="path-visual">
+                        <div class="path-node node-kasirnusa">
+                            <span class="node-name">Wahyu Nugroho</span>
+                            <span class="node-role">Account Manager (E04)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">AM C06, relasi aktif<br>10+ interaksi</span>
+                        </div>
+                        <div class="path-node node-contact">
+                            <span class="node-name">Budi Santoso</span>
+                            <span class="node-role">CFO Saiyo Group (K116)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">Ex-kolega di PT Sentosa Abadi<br>SALING_KENAL</span>
+                        </div>
+                        <div class="path-node node-dm">
+                            <span class="node-name">Hartono Gunawan</span>
+                            <span class="node-role">Direktur Utama P04 (K028)</span>
+                        </div>
+                    </div>
+                    <div class="path-evidence">
+                        <h4>Bukti dari Graph</h4>
+                        <div class="evidence-list">
+                            <div class="evidence-item">
+                                <span class="evidence-id">Employment</span>
+                                <span class="evidence-text">K116 (Budi Santoso): Finance Manager di PT Sentosa Abadi Group (2015–2019). K028 (Hartono Gunawan): GM di PT Sentosa Abadi Group (2015–2019). <strong>Periode overlap 5 tahun!</strong></span>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0260</span>
+                                <span class="evidence-text">Email Wahyu → Budi: laporan bulanan penggunaan C06 — hubungan AM aktif.</span>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0300</span>
+                                <span class="evidence-text">Budi → Wahyu: "Kami berencana membuka 10 outlet di Jakarta" — tingkat kepercayaan tinggi pada KasirNusa.</span>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0335</span>
+                                <span class="evidence-text">Yuli (P04) → Bagus: "Direktur Utama kami minta rekomendasi dari pengguna yang mirip" — Hartono butuh referensi.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="path-why">
+                        <h4>Mengapa Jalur Ini Terbaik?</h4>
+                        <ul>
+                            <li><strong>Koneksi personal Budi-Hartono</strong>: 5 tahun kerja bersama di PT Sentosa Abadi Group (Finance Manager & GM). Relasi profesional kuat.</li>
+                            <li><strong>Budi puas dengan KasirNusa</strong>: C06 health score Hijau, NPS 9, bahkan merencanakan ekspansi Jakarta (I0300).</li>
+                            <li><strong>Nirwana = Hospitality = mirip F&B</strong>: C06 Saiyo Group adalah resto Padang — industri paling mirip. Ini menjawab permintaan Hartono untuk "referensi pengguna mirip".</li>
+                            <li><strong>Budi seorang CFO</strong>: rekomendasi dari CFO ke Direktur Utama memiliki bobot finansial dan kredibilitas tinggi.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="path-card path-secondary" id="p04-path-2">
+                    <div class="path-rank">🥈 Jalur Alternatif</div>
+                    <div class="path-score">
+                        <span class="score-value">5.0</span>
+                        <span class="score-label">/10</span>
+                    </div>
+                    <div class="path-visual">
+                        <div class="path-node node-kasirnusa">
+                            <span class="node-name">Bagus Prakoso</span>
+                            <span class="node-role">Sales Executive (E06)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">Kontak langsung<br>3 interaksi</span>
+                        </div>
+                        <div class="path-node node-contact">
+                            <span class="node-name">Yuli Astuti</span>
+                            <span class="node-role">Purchasing Manager P04 (K065)</span>
+                        </div>
+                        <div class="path-arrow">
+                            <span class="arrow-label">Atasan langsung<br>Tapi belum ada referensi</span>
+                        </div>
+                        <div class="path-node node-dm">
+                            <span class="node-name">Hartono Gunawan</span>
+                            <span class="node-role">Direktur Utama P04 (K028)</span>
+                        </div>
+                    </div>
+                    <div class="path-evidence">
+                        <h4>Bukti dari Graph</h4>
+                        <div class="evidence-list">
+                            <div class="evidence-item">
+                                <span class="evidence-id">I0335</span>
+                                <span class="evidence-text">Yuli: "Kami tunda dulu sampai ada referensi" — jalur ini macet karena kurang referensi.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="path-why">
+                        <h4>Kelemahan</h4>
+                        <ul>
+                            <li>Jalur langsung melalui Yuli sudah macet — Hartono minta referensi yang belum dipenuhi.</li>
+                            <li>Yuli bukan decision maker, hanya menyampaikan pesan.</li>
+                            <li>Tidak ada warm introduction ke Hartono melalui jalur ini.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Message P04 -->
+            <div class="draft-section" id="p04-draft">
+                <h3 class="section-title">Draft Pesan Intro</h3>
+                
+                <div class="draft-card">
+                    <div class="draft-step">Langkah 1: Minta bantuan Budi Santoso</div>
+                    <div class="draft-header">
+                        <span class="draft-label">Dari: Wahyu Nugroho (wahyu@kasirnusa.id)</span>
+                        <span class="draft-label">Kepada: Budi Santoso (budi.santoso@saiyogroup.co.id)</span>
+                        <span class="draft-label">Subjek: Mohon bantuan referensi, Pak Budi</span>
+                    </div>
+                    <div class="draft-body" id="p04-draft-body-1">
+                        <p>Pak Budi yang baik,</p>
+                        <p>Terima kasih untuk rencana ekspansi Jakarta — kami sangat senang bisa terus mendukung Saiyo Group!</p>
+                        <p>Kebetulan ada calon pelanggan di industri hospitality, Nirwana Hotel & Resto (35 outlet), yang sedang mengevaluasi KasirNusa. Direktur Utama mereka, Pak Hartono Gunawan, minta rekomendasi dari pengguna yang mirip sebelum tanda tangan.</p>
+                        <p>Saya ingat Bapak pernah bekerja bersama Pak Hartono di PT Sentosa Abadi Group. Apakah Bapak berkenan memberikan referensi singkat tentang pengalaman Saiyo Group memakai KasirNusa? Bisa lewat telepon atau email langsung ke beliau.</p>
+                        <p>Tentu saja ini atas kebaikan hati Bapak dan tidak ada kewajiban sama sekali.</p>
+                        <p>Terima kasih banyak,<br>Wahyu Nugroho<br>Account Manager · KasirNusa</p>
+                    </div>
+                    <div class="draft-actions">
+                        <button class="copy-btn" onclick="copyDraft('p04-draft-body-1')">📋 Salin Pesan Langkah 1</button>
+                    </div>
+                </div>
+
+                <div class="draft-card" style="margin-top: 1.5rem;">
+                    <div class="draft-step">Langkah 2: Follow-up ke Yuli dengan referensi</div>
+                    <div class="draft-header">
+                        <span class="draft-label">Dari: Bagus Prakoso (bagus@kasirnusa.id)</span>
+                        <span class="draft-label">Kepada: Yuli Astuti (yuli.astuti@nirwanahotel.co.id)</span>
+                        <span class="draft-label">Subjek: Re: Status pengadaan — referensi dari Saiyo Group</span>
+                    </div>
+                    <div class="draft-body" id="p04-draft-body-2">
+                        <p>Bu Yuli,</p>
+                        <p>Menanggapi permintaan Pak Direktur, kami sudah memiliki referensi dari pengguna di industri serupa:</p>
+                        <p><strong>Saiyo Group</strong> (resto Padang, 30 outlet, paket Enterprise) — Pak Budi Santoso (CFO) bersedia berbagi pengalaman langsung. Menariknya, Pak Budi dan Pak Hartono pernah bekerja bersama di PT Sentosa Abadi Group.</p>
+                        <p>Saiyo Group sudah memakai KasirNusa selama lebih dari 2 tahun dengan health score sempurna, dan bahkan sedang merencanakan ekspansi ke Jakarta.</p>
+                        <p>Apakah Ibu bisa mengatur waktu supaya Pak Budi bisa berbicara langsung dengan Pak Hartono?</p>
+                        <p>Salam,<br>Bagus Prakoso<br>Sales Executive · KasirNusa</p>
+                    </div>
+                    <div class="draft-actions">
+                        <button class="copy-btn" onclick="copyDraft('p04-draft-body-2')">📋 Salin Pesan Langkah 2</button>
+                    </div>
+                    <div class="draft-rationale">
+                        <h4>Alasan pendekatan dua langkah:</h4>
+                        <ul>
+                            <li><strong>Blockernya jelas</strong>: Hartono minta referensi (I0335). Budi Santoso adalah referensi paling sempurna.</li>
+                            <li><strong>Koneksi PT Sentosa Abadi</strong>: relasi 5 tahun (2015–2019) antara Budi (Finance Manager) dan Hartono (GM) tidak terlihat dari satu sumber data saja — hanya ditemukan dengan menghubungkan employment history.</li>
+                            <li><strong>C06 adalah showcase terbaik</strong>: NPS 9, health score Hijau, Enterprise 30 outlet, rencana ekspansi.</li>
+                            <li><strong>Preseden log keputusan</strong>: Untuk deal volume besar, diskon 10-15% bisa ditawarkan (D-2025-11, D-2024-01). Untuk 35 outlet bisa usulkan 10-12%.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Items P04 -->
+            <div class="action-section" id="p04-actions">
+                <h3 class="section-title">Rekomendasi Tindakan</h3>
+                <div class="action-list">
+                    <div class="action-item priority-high">
+                        <span class="action-priority">SEGERA</span>
+                        <div class="action-content">
+                            <h4>Wahyu menghubungi Budi Santoso untuk minta referensi</h4>
+                            <p>Manfaatkan hubungan AM yang sudah terjalin baik. Budi sedang puas (ekspansi Jakarta).</p>
+                        </div>
+                    </div>
+                    <div class="action-item priority-high">
+                        <span class="action-priority">SEGERA</span>
+                        <div class="action-content">
+                            <h4>Bagus mengirim referensi ke Yuli + atur call Budi-Hartono</h4>
+                            <p>Setelah Budi konfirmasi, langsung follow-up ke Yuli dengan nama Budi sebagai referensi.</p>
+                        </div>
+                    </div>
+                    <div class="action-item priority-medium">
+                        <span class="action-priority">MINGGU INI</span>
+                        <div class="action-content">
+                            <h4>Siapkan proposal hospitality-specific</h4>
+                            <p>Highlight fitur F&B yang sudah dipakai Saiyo: POS inti, manajemen stok, program loyalti. Usulkan diskon 10-12% berdasarkan preseden.</p>
+                        </div>
+                    </div>
+                    <div class="action-item priority-medium">
+                        <span class="action-priority">MINGGU INI</span>
+                        <div class="action-content">
+                            <h4>Koordinasi Wahyu (AM C06) + Bagus (Sales P04)</h4>
+                            <p>Dua karyawan KasirNusa terlibat. Wahyu membuka referensi, Bagus eksekusi sales.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Full Graph Tab -->
+        <section id="tab-graph" class="tab-content">
+            <div class="graph-controls">
+                <h2>Context Graph Lengkap</h2>
+                <div class="control-row">
+                    <label>Filter Node:</label>
+                    <div class="filter-chips">
+                        <button class="chip active" data-filter="all" id="filter-all">Semua</button>
+                        <button class="chip" data-filter="kasirnusa" id="filter-kasirnusa">KasirNusa</button>
+                        <button class="chip" data-filter="prospect" id="filter-prospect">Prospek</button>
+                        <button class="chip" data-filter="customer" id="filter-customer">Pelanggan</button>
+                        <button class="chip" data-filter="contact" id="filter-contact">Kontak</button>
+                    </div>
+                </div>
+            </div>
+            <div class="full-graph-container">
+                <canvas id="full-graph" width="1200" height="700"></canvas>
+            </div>
+            <div class="graph-info-panel" id="graph-info-panel">
+                <h4>Klik node untuk melihat detail</h4>
+                <div id="node-detail"></div>
+            </div>
+        </section>
+
+        <!-- Live Query Tab -->
+        <section id="tab-query" class="tab-content">
+            <div class="query-section">
+                <h2>Live Query & Path Finder — Tanya Langsung ke Graph</h2>
+                <p class="query-desc">Eksplorasi context graph 6 sumber data secara real-time: kalkulasi jalur terpendek, stakeholder mapping, dan preseden keputusan.</p>
+                
+                <!-- Interactive Path Finder Widget -->
+                <div class="path-finder-widget">
+                    <h3><span>⚡</span> Interactive Relationship Path Finder</h3>
+                    <p class="sub">Pilih titik awal (Tim KasirNusa / AM / Klien) dan target (Decision Maker / Prospek). Mesin graph akan menghitung jalur terpendek, skor kekuatan relasi, dan rekomendasi pendekatan.</p>
+                    <div class="path-finder-controls">
+                        <div class="finder-field">
+                            <label for="finder-source">Titik Awal (Source)</label>
+                            <select id="finder-source" class="finder-select"></select>
+                        </div>
+                        <div class="finder-field">
+                            <label for="finder-target">Target Decision Maker (Destination)</label>
+                            <select id="finder-target" class="finder-select"></select>
+                        </div>
+                        <button class="btn-finder" onclick="runInteractivePathFinder()">
+                            <span>🔍</span> Temukan Jalur
+                        </button>
+                    </div>
+                    <div id="finder-result-box"></div>
+                </div>
+
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                    <span>📌</span> Preset Pertanyaan Inti & Lintas Track
+                </h3>
+                
+                <div class="query-presets" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                    <button class="query-preset" id="query-1" onclick="runQuery('path_p01')">
+                        🥇 P01: Jalur terbaik ke decision maker Mandala?
+                    </button>
+                    <button class="query-preset" id="query-2" onclick="runQuery('path_p04')">
+                        🥇 P04: Jalur terbaik ke decision maker Nirwana?
+                    </button>
+                    <button class="query-preset" id="query-3" onclick="runQuery('who_knows_who')">
+                        🤝 Siapa saling kenal lewat riwayat kerja (Sentosa Abadi)?
+                    </button>
+                    <button class="query-preset" id="query-4" onclick="runQuery('cross_track')">
+                        ⭐ Temuan lintas track: CS Churn ↔ Sales Growth (Bonus +5)?
+                    </button>
+                    <button class="query-preset" id="query-5" onclick="runQuery('precedent')">
+                        ⚖️ Preseden diskon: D-2025-11 vs Tolak diskon 20% D-2025-02?
+                    </button>
+                    <button class="query-preset" id="query-6" onclick="runQuery('risk_p01')">
+                        ⚠️ Apa risiko produk FEAT-07 belum rilis di P01 & C01?
+                    </button>
+                    <button class="query-preset" id="query-7" onclick="runQuery('tim2_dm')">
+                        👥 Tim 2: Siapa sebenarnya decision maker di P01 & P03?
+                    </button>
+                    <button class="query-preset" id="query-8" onclick="runQuery('tim4_accel')">
+                        🚀 Tim 4: Deal prioritas & akselerasi pipeline (Rp 399M)?
+                    </button>
+                    <button class="query-preset" id="query-9" onclick="runQuery('tim5_expansion')">
+                        📈 Tim 5: Peluang ekspansi pelanggan C06 (10 outlet Jakarta)?
+                    </button>
+                    <button class="query-preset" id="query-10" onclick="runQuery('tim1_churn')">
+                        🚨 Tim 1: Akun mana paling berisiko churn (C01, C02, C03)?
+                    </button>
+                </div>
+
+                <div class="query-input-wrap">
+                    <input type="text" id="query-input" placeholder="Atau ketik pertanyaan apa pun (misal: Budi Santoso, Hartono, Diskon 20%, FEAT-07)..." class="query-input">
+                    <button id="query-submit" onclick="runCustomQuery()" class="query-submit">Cari Graph</button>
+                </div>
+
+                <div class="query-result" id="query-result">
+                    <div class="query-empty">
+                        <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+                            <circle cx="40" cy="40" r="35" stroke="#6C63FF" stroke-width="2" opacity="0.3"/>
+                            <circle cx="30" cy="30" r="8" fill="#6C63FF" opacity="0.2"/>
+                            <circle cx="55" cy="35" r="6" fill="#00D9FF" opacity="0.2"/>
+                            <circle cx="40" cy="55" r="7" fill="#FF6B9D" opacity="0.2"/>
+                            <line x1="30" y1="30" x2="55" y2="35" stroke="#6C63FF" stroke-width="1" opacity="0.3"/>
+                            <line x1="30" y1="30" x2="40" y2="55" stroke="#FF6B9D" stroke-width="1" opacity="0.3"/>
+                        </svg>
+                        <p>Pilih pertanyaan preset di atas atau ketik pertanyaan pencarian Anda</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="graph-data.js"></script>
+    <script src="graph-renderer.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

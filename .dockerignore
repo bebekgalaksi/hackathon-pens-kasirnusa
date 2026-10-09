@@ -1,0 +1,6 @@
+.git
+.github
+*.csv
+*.jsonl
+*.pdf
+product_usage_daily.csv

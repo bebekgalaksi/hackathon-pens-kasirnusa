@@ -1,0 +1,7 @@
+services:
+  kasirnusa-pathfinder:
+    build: .
+    container_name: kasirnusa-pathfinder
+    ports:
+      - "8080:80"
+    restart: unless-stopped

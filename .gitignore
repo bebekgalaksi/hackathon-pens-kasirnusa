@@ -6,5 +6,8 @@ Thumbs.db
 *.swp
 *.swo
 
+# Secrets & Environment
+.env
+
 # Logs
 *.log
